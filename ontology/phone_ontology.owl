@@ -30,22 +30,48 @@
 
 <owl:Class rdf:about="#Phone">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  <owl:equivalentClass>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#has_part"/>
+      <owl:someValuesFrom rdf:resource="#Part"/>
+    </owl:Restriction>
+  </owl:equivalentClass>
 </owl:Class>
 
 <owl:Class rdf:about="#Part">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
-<owl:Class rdf:about="#Tool">
+<owl:Class rdf:about="#Procedure">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#uses_tool"/>
+          <owl:someValuesFrom rdf:resource="#Tool"/>
+        </owl:Restriction>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#has_step"/>
+          <owl:someValuesFrom rdf:resource="#Step"/>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
 </owl:Class>
 
-<owl:Class rdf:about="#Procedure">
+<owl:Class rdf:about="#Tool">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
 <owl:Class rdf:about="#Step">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  <owl:equivalentClass>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#has_image"/>
+      <owl:someValuesFrom rdf:resource="#Image"/>
+    </owl:Restriction>
+  </owl:equivalentClass>
 </owl:Class>
 
 <owl:Class rdf:about="#Image">
