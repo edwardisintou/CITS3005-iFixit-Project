@@ -46,6 +46,22 @@ def get_tool_subclass(tool_name):
     else:
         return Tool  # Default to the generic Tool class
 
+# Helper function to determine part subclass from tool name
+def get_part_subclass(tool_name):
+    tool_name_lower = tool_name.lower()
+    if "battery" in tool_name_lower:
+        return Battery
+    elif "screen" in tool_name_lower:
+        return Screen
+    elif "antenna cover" in tool_name_lower:
+        return AntennaCover
+    elif "sim card tray" in tool_name_lower:
+        return SIMCardTray
+    elif "headphone jack" in tool_name_lower:
+        return HeadphoneJack
+    else:
+        return Part  # Default to the generic Part class
+
 # Load and parse each line of the JSON file
 with open('data/Phone.json') as f:
     for line in f:
@@ -58,15 +74,29 @@ with open('data/Phone.json') as f:
         # Link the procedure to the phone as a part of it
         phone_instance.has_part = [procedure_instance]
         
-        # Create instances of Tools
+        # Create instances of Tools and Parts
         tools = []
+        parts = []
         for tool_data in phone_data.get("Toolbox", []):
-            tool_class = get_tool_subclass(tool_data["Name"])
-            tool_instance = tool_class(sanitize_name(tool_data["Name"]))
-            tools.append(tool_instance)
+            tool_name = tool_data["Name"]
+            url = tool_data.get("Url", "")
+            
+            # Check if the URL contains "/Parts/" to identify it as a part
+            if '/Parts/' in url:
+                # Create an instance of a part
+                part_class = get_part_subclass(tool_name)
+                part_instance = part_class(sanitize_name(tool_name))
+                parts.append(part_instance)
+            else:
+                # Create an instance of a tool
+                tool_class = get_tool_subclass(tool_name)
+                tool_instance = tool_class(sanitize_name(tool_name))
+                tools.append(tool_instance)
         
-        # Link tools to the procedure
+        # Link tools and parts to the procedure and phone
         procedure_instance.uses_tool = tools
+        if parts:
+            phone_instance.has_part.extend(parts)
         
         # Create instances of Steps
         steps = []
