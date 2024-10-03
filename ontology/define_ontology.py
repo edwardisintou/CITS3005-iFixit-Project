@@ -11,11 +11,18 @@ with ontology:
     class Step(Thing): pass
     class Image(Thing): pass
 
-    # Define properties with more specific domains and ranges
-    class has_part(ObjectProperty):
-        domain = [Phone]
-        range = [Part]
+    # Define subclasses of Tool
+    class OpeningTool(Tool): pass
+    class Spudger(Tool): pass
+    class Screwdriver(Tool): pass
+    class SimCardEjectTool(Tool): pass
 
+    # Define subclasses of Part
+    class AntennaCover(Part): pass
+    class SIMCardTray(Part): pass
+    class HeadphoneJack(Part): pass
+
+    # Define properties with more specific domains and ranges
     class uses_tool(ObjectProperty):
         domain = [Procedure]
         range = [Tool]
@@ -27,6 +34,16 @@ with ontology:
     class has_image(ObjectProperty):
         domain = [Step]
         range = [Image]
+
+    class is_part_of(ObjectProperty):
+        domain = [Part]
+        range = [Thing]
+        is_transitive = True
+
+    class has_part(ObjectProperty):
+        domain = [Phone]
+        range = [Thing]
+        inverse_property = is_part_of
 
     # Add restrictions directly to the primary classes
     Phone.equivalent_to = [has_part.some(Part)]
