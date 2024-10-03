@@ -1,6 +1,6 @@
 from owlready2 import *
 
-ontology = get_ontology("http://example.org/phone_ontology.owl")
+ontology = get_ontology("http://example.org/phone_knowledge_graph.owl")
 
 with ontology:
     # Define classes

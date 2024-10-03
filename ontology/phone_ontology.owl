@@ -3,10 +3,10 @@
          xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
          xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
          xmlns:owl="http://www.w3.org/2002/07/owl#"
-         xml:base="http://example.org/phone_ontology.owl"
-         xmlns="http://example.org/phone_ontology.owl#">
+         xml:base="http://example.org/phone_knowledge_graph.owl"
+         xmlns="http://example.org/phone_knowledge_graph.owl#">
 
-<owl:Ontology rdf:about="http://example.org/phone_ontology.owl"/>
+<owl:Ontology rdf:about="http://example.org/phone_knowledge_graph.owl"/>
 
 <owl:ObjectProperty rdf:about="#is_part_of">
   <rdfs:domain rdf:resource="#Part"/>

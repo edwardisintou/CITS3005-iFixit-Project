@@ -30,7 +30,13 @@ has_sub_procedure = ontology.has_sub_procedure
 
 # Function to sanitize names for use as ontology individuals
 def sanitize_name(name):
-    return name.strip().replace(" ", "_").replace("-", "_").replace("/", "_")
+    # Remove or replace illegal characters
+    sanitized_name = name.strip().replace(" ", "_").replace("-", "_").replace("/", "_").replace(":", "").replace("#", "")
+    # Handle URLs by extracting a meaningful part
+    if 'http' in sanitized_name:
+        sanitized_name = sanitized_name.split('_')[-1]  # Take the last segment after underscores
+    return sanitized_name
+
 
 # Helper function to determine tool subclass
 def get_tool_subclass(tool_name):
@@ -125,4 +131,3 @@ for procedure in ontology.Procedure.instances():
 
 # Save the populated ontology
 ontology.save(file="ontology/phone_knowledge_graph.owl")
-
