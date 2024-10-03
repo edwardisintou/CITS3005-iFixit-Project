@@ -81,17 +81,17 @@ with open('data/Phone.json') as f:
             tool_name = tool_data["Name"]
             url = tool_data.get("Url", "")
             
-            # Check if the URL contains "/Parts/" to identify it as a part
-            if '/Parts/' in url:
-                # Create an instance of a part
-                part_class = get_part_subclass(tool_name)
-                part_instance = part_class(sanitize_name(tool_name))
-                parts.append(part_instance)
-            else:
-                # Create an instance of a tool
-                tool_class = get_tool_subclass(tool_name)
-                tool_instance = tool_class(sanitize_name(tool_name))
-                tools.append(tool_instance)
+            # Check if url is not None and if it contains '/Parts/' to identify it as a part
+        if url and '/Parts/' in url:
+            # Create an instance of a part
+            part_class = get_part_subclass(tool_name)
+            part_instance = part_class(sanitize_name(tool_name))
+            parts.append(part_instance)
+        else:
+            # Create an instance of a tool
+            tool_class = get_tool_subclass(tool_name)
+            tool_instance = tool_class(sanitize_name(tool_name))
+            tools.append(tool_instance)
         
         # Link tools and parts to the procedure and phone
         procedure_instance.uses_tool = tools
@@ -112,5 +112,17 @@ with open('data/Phone.json') as f:
         # Link steps to the procedure
         procedure_instance.has_step = steps
 
+# After creating instances for phones, tools, parts, steps, etc., link sub-procedures
+for procedure in ontology.Procedure.instances():
+    # Placeholder logic to identify sub-procedures
+    if "Replacement" in procedure.name:
+        # Find or create another procedure that might be a sub-procedure
+        sub_procedure_name = procedure.name.replace("Replacement", "SubProcedure")
+        sub_procedure = ontology.Procedure(sanitize_name(sub_procedure_name))
+        
+        # Link the sub-procedure to the current procedure
+        procedure.has_sub_procedure = [sub_procedure]
+
 # Save the populated ontology
 ontology.save(file="ontology/phone_knowledge_graph.owl")
+
