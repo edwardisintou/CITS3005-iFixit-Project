@@ -21,8 +21,20 @@ with ontology:
     class AntennaCover(Part): pass
     class SIMCardTray(Part): pass
     class HeadphoneJack(Part): pass
+    class Battery(Part): pass
+    class Screen(Part): pass
 
     # Define properties with more specific domains and ranges
+    class is_part_of(ObjectProperty):
+        domain = [Part]
+        range = [Thing]
+        is_transitive = True
+
+    class has_part(ObjectProperty):
+        domain = [Phone]
+        range = [Thing]
+        inverse_property = is_part_of
+
     class uses_tool(ObjectProperty):
         domain = [Procedure]
         range = [Tool]
@@ -35,19 +47,13 @@ with ontology:
         domain = [Step]
         range = [Image]
 
-    class is_part_of(ObjectProperty):
-        domain = [Part]
-        range = [Thing]
-        is_transitive = True
-
-    class has_part(ObjectProperty):
-        domain = [Phone]
-        range = [Thing]
-        inverse_property = is_part_of
+    class has_sub_procedure(ObjectProperty):
+        domain = [Procedure]
+        range = [Procedure]
 
     # Add restrictions directly to the primary classes
     Phone.equivalent_to = [has_part.some(Part)]
-    Procedure.equivalent_to = [uses_tool.some(Tool) & has_step.some(Step)]
+    Procedure.equivalent_to = [uses_tool.some(Tool) & has_step.some(Step) & has_sub_procedure.only(Procedure)]
     Step.equivalent_to = [has_image.some(Image)]
 
 # Save the ontology
