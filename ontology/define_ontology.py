@@ -15,14 +15,11 @@ with ontology:
     class OpeningTool(Tool): pass
     class Spudger(Tool): pass
     class Screwdriver(Tool): pass
-    class SimCardEjectTool(Tool): pass
-
+    class Tweezers(Tool): pass
+    
     # Define subclasses of Part
-    class AntennaCover(Part): pass
-    class SIMCardTray(Part): pass
-    class HeadphoneJack(Part): pass
-    class Battery(Part): pass
-    class Screen(Part): pass
+    class OpeningToolPart(Part): pass
+    class ScrewdriverPart(Part): pass
 
     # Define properties with more specific domains and ranges
     class is_part_of(ObjectProperty):

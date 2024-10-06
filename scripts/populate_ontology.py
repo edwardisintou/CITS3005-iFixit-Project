@@ -4,23 +4,25 @@ from owlready2 import *
 # Load the ontology
 ontology = get_ontology("ontology/phone_ontology.owl").load()
 
-# Access classes and properties
+# Access classes
 Phone = ontology.Phone
-Part = ontology.Part
-Battery = ontology.Battery
-Screen = ontology.Screen
-AntennaCover = ontology.AntennaCover
-SIMCardTray = ontology.SIMCardTray
-HeadphoneJack = ontology.HeadphoneJack
 Procedure = ontology.Procedure
+Part = ontology.Part
+Step = ontology.Step
+Image = ontology.Image
 Tool = ontology.Tool
+
+# Access subclasses of Tool
 OpeningTool = ontology.OpeningTool
 Screwdriver = ontology.Screwdriver
 Spudger = ontology.Spudger
-SimCardEjectTool = ontology.SimCardEjectTool
-Step = ontology.Step
-Image = ontology.Image
+Tweezers = ontology.Tweezers
 
+# Access subclasses of Part
+OpeningToolPart = ontology.OpeningToolPart
+ScrewdriverPart = ontology.ScrewdriverPart
+
+# Access properties
 is_part_of = ontology.is_part_of
 has_part = ontology.has_part
 uses_tool = ontology.uses_tool
@@ -37,7 +39,6 @@ def sanitize_name(name):
         sanitized_name = sanitized_name.split('_')[-1]  # Take the last segment after underscores
     return sanitized_name
 
-
 # Helper function to determine tool subclass
 def get_tool_subclass(tool_name):
     tool_name_lower = tool_name.lower()
@@ -47,24 +48,18 @@ def get_tool_subclass(tool_name):
         return Screwdriver
     elif "spudger" in tool_name_lower:
         return Spudger
-    elif "sim card eject tool" in tool_name_lower:
-        return SimCardEjectTool
+    elif "tweezers" in tool_name_lower:
+        return Tweezers
     else:
         return Tool  # Default to the generic Tool class
 
 # Helper function to determine part subclass from tool name
 def get_part_subclass(tool_name):
     tool_name_lower = tool_name.lower()
-    if "battery" in tool_name_lower:
-        return Battery
-    elif "screen" in tool_name_lower:
-        return Screen
-    elif "antenna cover" in tool_name_lower:
-        return AntennaCover
-    elif "sim card tray" in tool_name_lower:
-        return SIMCardTray
-    elif "headphone jack" in tool_name_lower:
-        return HeadphoneJack
+    if "opening tool" in tool_name_lower:
+        return OpeningToolPart
+    elif "screwdriver" in tool_name_lower:
+        return ScrewdriverPart
     else:
         return Part  # Default to the generic Part class
 
@@ -87,17 +82,17 @@ with open('data/Phone.json') as f:
             tool_name = tool_data["Name"]
             url = tool_data.get("Url", "")
             
-            # Check if url is not None and if it contains '/Parts/' to identify it as a part
-        if url and '/Parts/' in url:
-            # Create an instance of a part
-            part_class = get_part_subclass(tool_name)
-            part_instance = part_class(sanitize_name(tool_name))
-            parts.append(part_instance)
-        else:
-            # Create an instance of a tool
-            tool_class = get_tool_subclass(tool_name)
-            tool_instance = tool_class(sanitize_name(tool_name))
-            tools.append(tool_instance)
+            # Check if the item should be classified as a part or a tool
+            if url and '/Parts/' in url:
+                # Treat as a part
+                part_class = get_part_subclass(tool_name)
+                part_instance = part_class(sanitize_name(tool_name))
+                parts.append(part_instance)
+            else:
+                # Treat as a tool
+                tool_class = get_tool_subclass(tool_name)
+                tool_instance = tool_class(sanitize_name(tool_name))
+                tools.append(tool_instance)
         
         # Link tools and parts to the procedure and phone
         procedure_instance.uses_tool = tools

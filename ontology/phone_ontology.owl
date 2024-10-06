@@ -106,27 +106,15 @@
   <rdfs:subClassOf rdf:resource="#Tool"/>
 </owl:Class>
 
-<owl:Class rdf:about="#SimCardEjectTool">
+<owl:Class rdf:about="#Tweezers">
   <rdfs:subClassOf rdf:resource="#Tool"/>
 </owl:Class>
 
-<owl:Class rdf:about="#AntennaCover">
+<owl:Class rdf:about="#OpeningToolPart">
   <rdfs:subClassOf rdf:resource="#Part"/>
 </owl:Class>
 
-<owl:Class rdf:about="#SIMCardTray">
-  <rdfs:subClassOf rdf:resource="#Part"/>
-</owl:Class>
-
-<owl:Class rdf:about="#HeadphoneJack">
-  <rdfs:subClassOf rdf:resource="#Part"/>
-</owl:Class>
-
-<owl:Class rdf:about="#Battery">
-  <rdfs:subClassOf rdf:resource="#Part"/>
-</owl:Class>
-
-<owl:Class rdf:about="#Screen">
+<owl:Class rdf:about="#ScrewdriverPart">
   <rdfs:subClassOf rdf:resource="#Part"/>
 </owl:Class>
 
