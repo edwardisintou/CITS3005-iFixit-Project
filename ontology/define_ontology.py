@@ -4,7 +4,7 @@ ontology = get_ontology("http://example.org/phone_knowledge_graph.owl")
 
 with ontology:
     # Define classes
-    class Phone(Thing): pass
+    class Item(Thing): pass
     class Part(Thing): pass
     class Procedure(Thing): pass
     class Tool(Thing): pass
@@ -23,13 +23,13 @@ with ontology:
 
     # Define object properties
     class has_part(ObjectProperty):
-        domain = [Phone]
+        domain = [Item]  # Changed from Phone to Item
         range = [Part]
         is_transitive = True
 
     class is_part_of(ObjectProperty):
         domain = [Part]
-        range = [Phone]
+        range = [Item]  # Changed from Phone to Item
         inverse_property = has_part
 
     class has_procedure(ObjectProperty):
@@ -79,7 +79,7 @@ with ontology:
         inverse_property = has_sub_procedure
 
     # Add restrictions directly to the primary classes
-    Phone.equivalent_to = [has_part.some(Part)]
+    Item.equivalent_to = [has_part.some(Part)]
     Part.equivalent_to = [has_procedure.some(Procedure)]
     Procedure.equivalent_to = [uses_tool.some(Tool) & has_step.some(Step) & has_sub_procedure.only(Procedure)]
     Step.equivalent_to = [has_image.some(Image)]
