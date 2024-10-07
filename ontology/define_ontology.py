@@ -86,7 +86,7 @@ with ontology:
         domain = [Step]
         range = [int]
 
-    class step_text(DataProperty):  # Store the text description of each step
+    class step_text(DataProperty, FunctionalProperty):  # Store the text description of each step
         domain = [Step]
         range = [str]
 
