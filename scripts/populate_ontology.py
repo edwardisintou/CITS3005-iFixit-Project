@@ -29,6 +29,9 @@ def sanitize_name(name):
     sanitized_name = name.strip().replace(" ", "_").replace("-", "_").replace("/", "_").replace(":", "").replace("#", "")
     return sanitized_name
 
+# Dictionary to store procedure instances and their steps
+procedure_instances = {}
+
 # Load and parse each line of the JSON file
 with open('data/Phone.json') as f:
     for line in f:
@@ -63,7 +66,6 @@ with open('data/Phone.json') as f:
         # Link tools to the procedure
         if tools:
             procedure_instance.uses_tool = tools
-            # print(procedure_instance, procedure_instance.uses_tool)
         
         # Create instances of Steps
         steps = []
@@ -82,6 +84,9 @@ with open('data/Phone.json') as f:
         if steps:
             procedure_instance.has_step = steps
 
+        # Store the procedure and its steps for later comparison
+        procedure_instances[procedure_instance] = steps
+
         # # Debug: Print created instances
         # print(f"Created Item: {item_name}")
         # if part_name:
@@ -92,6 +97,11 @@ with open('data/Phone.json') as f:
         # for step in steps:
         #     print(f" - Step: {step.name} has image: {step.has_image}")
 
+# Infer sub-procedure relationships by comparing steps of each procedure
+for proc1, steps1 in procedure_instances.items():
+    for proc2, steps2 in procedure_instances.items():
+        if proc1 != proc2 and set(steps1).issubset(set(steps2)):
+            proc2.has_sub_procedure.append(proc1)
 
 # Save the populated ontology
 ontology.save(file="ontology/phone_knowledge_graph.owl")

@@ -98,12 +98,12 @@ with ontology:
         domain = [Procedure]
         range = [int]
 
-    # Add restrictions directly to the primary classes
+    # Add restrictions
     Item.equivalent_to = [has_part.some(Part) | has_procedure.some(Procedure) | has_part_procedure.some(Procedure)] # An Item can have parts or procedures
     Part.equivalent_to = [is_part_of.some(Item) | has_procedure.some(Procedure)]  # A Part can have procedures or be part of an Item
     Procedure.equivalent_to = [uses_tool.some(Tool) & has_step.some(Step)]  # A Procedure uses tools and has steps
     Step.equivalent_to = [has_image.some(Image)]  # A Step has an associated image
-
+    
     # Rule: Aggregate part procedures to the item
     rule = Imp()
     rule.set_as_rule("""
