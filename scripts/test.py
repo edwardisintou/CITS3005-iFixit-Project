@@ -3,12 +3,9 @@ import json
 with open('data/Phone.json') as f:
     for line in f:
         phone_data = json.loads(line.strip())
-        # ancestors = phone_data.get("Ancestors", [])
-        # print(ancestors)
-        print(phone_data.keys())
-        print(phone_data['Steps'][0]['Tools_extracted'])
-        # print(phone_data['Steps'][0]['Images'])
-        break
+        if phone_data['Title'] == 'Sony Xperia XZ Premium Battery Replacement':
+            for step in phone_data['Steps']:
+                print(step['Text_raw'])
     
 # from owlready2 import *
 # ontology = get_ontology("http://example.org/phone_ontology.owl")

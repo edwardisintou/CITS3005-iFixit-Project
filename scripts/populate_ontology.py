@@ -30,7 +30,7 @@ def sanitize_name(name):
     sanitized_name = name.strip().replace(" ", "_").replace("-", "_").replace("/", "_").replace(":", "").replace("#", "")
     return sanitized_name
 
-# Dictionary to store procedure instances and their steps
+# Dictionary to store procedure instances, their steps, and associated items/parts
 procedure_instances = {}
 
 # Load and parse each line of the JSON file
@@ -52,10 +52,16 @@ with open('data/Phone.json') as f:
             # Create a procedure instance for this part
             procedure_instance = Procedure(sanitize_name(phone_data["Title"]) + "_Procedure")
             part_instance.has_procedure.append(procedure_instance)
+
+            # Store the procedure and the part it belongs to
+            procedure_instances[procedure_instance] = (part_instance, [])
         else:
             # If "Subject" is empty or matches the item, create a procedure for the entire item
             procedure_instance = Procedure(sanitize_name(phone_data["Title"]) + "_Procedure")
             item_instance.has_procedure.append(procedure_instance)
+
+            # Store the procedure and the item it belongs to
+            procedure_instances[procedure_instance] = (item_instance, [])
         
         # Create instances of Tools using "Toolbox" "Name"
         tools = []
@@ -93,26 +99,17 @@ with open('data/Phone.json') as f:
         # Link steps to the procedure
         if steps:
             procedure_instance.has_step = steps
-
-        # Store the procedure and its steps for later comparison
-        procedure_instances[procedure_instance] = steps
-
-        # # Debug: Print created instances
-        # print(f"Created Item: {item_name}")
-        # if part_name:
-        #     print(f" - Part: {part_instance.name}")
-        # print(f" - Procedure: {procedure_instance.name}")
-        # for tool in tools:
-        #     print(f" - Tool: {tool.name}")
-        # for step in steps:
-        #     print(f" - Step: {step.name} has image: {step.has_image}")
+        
+        # Update the steps list in the dictionary
+        procedure_instances[procedure_instance] = (procedure_instances[procedure_instance][0], steps)
 
 # Infer sub-procedure relationships by comparing steps of each procedure
-for proc1, steps1 in procedure_instances.items():
-    for proc2, steps2 in procedure_instances.items():
+for proc1, (item1, steps1) in procedure_instances.items():
+    for proc2, (item2, steps2) in procedure_instances.items():
         if proc1 != proc2 and set(steps1).issubset(set(steps2)):
-            print(proc1)
-            proc2.has_sub_procedure.append(proc1)
+            # Ensure that proc1 is for the same item as proc2 or for a part of the same item
+            if item1 == item2 or item1 in item2.has_part or item2 in item1.has_part:
+                proc2.has_sub_procedure.append(proc1)
 
 # Save the populated ontology
 ontology.save(file="ontology/phone_knowledge_graph.owl")
