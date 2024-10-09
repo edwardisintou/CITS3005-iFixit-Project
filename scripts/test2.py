@@ -1,34 +1,16 @@
-import json
-from collections import defaultdict
+from owlready2 import *
 
-# Load the JSON data and calculate frequencies of tools and parts
-tool_counts = defaultdict(int)
-part_counts = defaultdict(int)
+# Load or create an ontology
+ontology = get_ontology("http://example.org/phone_ontology.owl")
 
-# Open and read the dataset
-with open('data/Phone.json') as f:
-    for line in f:
-        phone_data = json.loads(line.strip())
-        
-        # Count tools in the toolbox
-        for tool_data in phone_data.get("Toolbox", []):
-            tool_name = tool_data["Name"]
-            tool_counts[tool_name.lower()] += 1  # Convert to lowercase for uniform counting
-            
-            # Check if the URL indicates it's a part and count it
-            url = tool_data.get("Url", "")
-            if url and '/Parts/' in url:
-                part_counts[tool_name.lower()] += 1
+with ontology:
+    # Define classes
+    class Item(Thing): pass
+    class Phone(Item): pass
+    class Smartphone(Phone): pass
 
-# Sort tools and parts by their frequency
-sorted_tools = sorted(tool_counts.items(), key=lambda x: x[1], reverse=True)
-sorted_parts = sorted(part_counts.items(), key=lambda x: x[1], reverse=True)
-
-# Output the most common tools and parts
-print("Most common tools:")
-for tool, count in sorted_tools:
-    print(f"{tool}: {count} times")
-
-# print("\nMost common parts:")
-# for part, count in sorted_parts:
-#     print(f"{part}: {count} times")
+# Here, Smartphone is a subclass of Phone, and Phone is a subclass of Item
+print(Smartphone.is_a)
+# Output: [Phone]
+print(Phone.is_a)
+# Output: [Item]

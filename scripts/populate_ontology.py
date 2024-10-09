@@ -22,6 +22,7 @@ has_image = ontology.has_image
 has_sub_procedure = ontology.has_sub_procedure
 has_title = ontology.has_title
 step_text = ontology.step_text
+mentioned_tools = ontology.mentioned_tools
 num_steps = ontology.num_steps
 
 # Function to sanitize names for use as ontology individuals
@@ -79,6 +80,15 @@ with open('data/Phone.json') as f:
             
             # Add the step text to the step instance
             step_instance.step_text = step_data.get("Text_raw", "")
+
+            # Check for tools mentioned in the step and add them to the procedure's toolbox if missing
+            step_tools = step_data.get("Tools_extracted", [])
+            for tool_name in step_tools:
+                tool_instance = Tool(sanitize_name(tool_name))
+                step_instance.mentioned_tools.append(tool_name)
+                # Add to the procedure's toolbox if not already included
+                if tool_instance not in procedure_instance.uses_tool:
+                    procedure_instance.uses_tool.append(tool_instance)
         
         # Link steps to the procedure
         if steps:
@@ -101,6 +111,7 @@ with open('data/Phone.json') as f:
 for proc1, steps1 in procedure_instances.items():
     for proc2, steps2 in procedure_instances.items():
         if proc1 != proc2 and set(steps1).issubset(set(steps2)):
+            print(proc1)
             proc2.has_sub_procedure.append(proc1)
 
 # Save the populated ontology
