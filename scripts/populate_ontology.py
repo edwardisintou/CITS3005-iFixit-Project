@@ -1,4 +1,5 @@
 import json
+import hashlib
 from owlready2 import *
 
 # Load the ontology
@@ -28,6 +29,10 @@ num_steps = ontology.num_steps
 # Function to sanitize names for use as ontology individuals
 def sanitize_name(name):
     sanitized_name = name.strip().replace(" ", "_").replace("-", "_").replace("/", "_").replace(":", "").replace("#", "")
+    sanitized_name = ''.join(c for c in sanitized_name if c.isalnum() or c in ['_', '-'])
+    # If the name is too long, hash it
+    if len(sanitized_name) > 50:
+        return hashlib.sha1(sanitized_name.encode()).hexdigest()
     return sanitized_name
 
 # Dictionary to store procedure instances, their steps, and associated items/parts
@@ -114,10 +119,13 @@ for proc1, (item1, steps1) in procedure_instances.items():
         # Ensure that proc1 is a subset of proc2 and that proc1 and proc2 are for the same item or its parts
         if proc1 != proc2 and steps1_texts.issubset(steps2_texts):
             if item1 == item2 or item1 in item2.has_part:
-                proc2.has_sub_procedure.append(proc1)
-
+                # Avoid adding duplicate sub-procedures
+                if proc1 not in proc2.has_sub_procedure:
+                    proc2.has_sub_procedure.append(proc1)
             elif item1 == item2 or item2 in item1.has_part:
-                proc1.has_sub_procedure.append(proc2)
+                # Ensure proc2 is also added as a sub-procedure of proc1 if applicable
+                if proc2 not in proc1.has_sub_procedure:
+                    proc1.has_sub_procedure.append(proc2)
 
 # Save the populated ontology
 ontology.save(file="ontology/phone_knowledge_graph.owl")

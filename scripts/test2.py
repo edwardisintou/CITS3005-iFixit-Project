@@ -6,4 +6,5 @@ with open('data/Phone.json') as f:
         print(phone_data['Steps'][1]['Text_raw'])
         break
 
-phone_ontology.iPhone_3G_Display_Replacement is a sub-procedure of phone_ontology.iPhone_3GS_Display_Replacement
+# phone_ontology.iPhone_3G_Display_Replacement is a sub-procedure of phone_ontology.iPhone_3GS_Display_Replacement
+# phone_ontology.BlackBerry_7130e_Keypad_Replacement is a sub-procedure of phone_ontology.BlackBerry_7130e_Disassembly

@@ -31,4 +31,4 @@ with open('data/Phone.json') as f:
 #         print(procedure.name)
 #         break
 
-# phone_ontology.iPhone_4_Rear_Panel_Replacement is a sub-procedure of phone_ontology.Repairing_iPhone_4_LCD_Backlight_Dim_spot_issue
+
