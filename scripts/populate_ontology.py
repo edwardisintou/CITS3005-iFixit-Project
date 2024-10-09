@@ -50,14 +50,14 @@ with open('data/Phone.json') as f:
             item_instance.has_part.append(part_instance)
 
             # Create a procedure instance for this part
-            procedure_instance = Procedure(sanitize_name(phone_data["Title"]) + "_Procedure")
+            procedure_instance = Procedure(sanitize_name(phone_data["Title"]))
             part_instance.has_procedure.append(procedure_instance)
 
             # Store the procedure and the part it belongs to
             procedure_instances[procedure_instance] = (part_instance, [])
         else:
             # If "Subject" is empty or matches the item, create a procedure for the entire item
-            procedure_instance = Procedure(sanitize_name(phone_data["Title"]) + "_Procedure")
+            procedure_instance = Procedure(sanitize_name(phone_data["Title"]))
             item_instance.has_procedure.append(procedure_instance)
 
             # Store the procedure and the item it belongs to
@@ -77,7 +77,9 @@ with open('data/Phone.json') as f:
         # Create instances of Steps
         steps = []
         for step_data in phone_data.get("Steps", []):
-            step_instance = Step(f"{sanitize_name(phone_data['Title'])}_Step_{step_data['Order']}")
+            # Generate a step identifier based on the step text
+            step_text_content = step_data.get("Text_raw", "").strip()
+            step_instance = Step(sanitize_name(step_text_content))
             steps.append(step_instance)
             
             # Create Image instances and link them to the step
@@ -85,8 +87,8 @@ with open('data/Phone.json') as f:
             step_instance.has_image = images
             
             # Add the step text to the step instance
-            step_instance.step_text = step_data.get("Text_raw", "")
-
+            step_instance.step_text = step_text_content
+            
             # Check for tools mentioned in the step and add them to the procedure's toolbox if missing
             step_tools = step_data.get("Tools_extracted", [])
             for tool_name in step_tools:
@@ -95,7 +97,7 @@ with open('data/Phone.json') as f:
                 # Add to the procedure's toolbox if not already included
                 if tool_instance not in procedure_instance.uses_tool:
                     procedure_instance.uses_tool.append(tool_instance)
-        
+
         # Link steps to the procedure
         if steps:
             procedure_instance.has_step = steps
@@ -105,11 +107,17 @@ with open('data/Phone.json') as f:
 
 # Infer sub-procedure relationships by comparing steps of each procedure
 for proc1, (item1, steps1) in procedure_instances.items():
-    for proc2, (item2, steps2) in procedure_instances.items():
-        if proc1 != proc2 and set(steps1).issubset(set(steps2)):
-            # Ensure that proc1 is for the same item as proc2 or for a part of the same item
-            if item1 == item2 or item1 in item2.has_part or item2 in item1.has_part:
+    for proc2, (item2, steps2) in procedure_instances.items():     
+        steps1_texts = {step.step_text for step in steps1}
+        steps2_texts = {step.step_text for step in steps2}
+        
+        # Ensure that proc1 is a subset of proc2 and that proc1 and proc2 are for the same item or its parts
+        if proc1 != proc2 and steps1_texts.issubset(steps2_texts):
+            if item1 == item2 or item1 in item2.has_part:
                 proc2.has_sub_procedure.append(proc1)
+
+            elif item1 == item2 or item2 in item1.has_part:
+                proc1.has_sub_procedure.append(proc2)
 
 # Save the populated ontology
 ontology.save(file="ontology/phone_knowledge_graph.owl")
