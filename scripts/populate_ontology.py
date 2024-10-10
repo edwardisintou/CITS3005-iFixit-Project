@@ -32,7 +32,7 @@ def sanitize_name(name):
     sanitized_name = ''.join(c for c in sanitized_name if c.isalnum() or c in ['_', '-'])
 
     # If the name is too long, hash it
-    if len(sanitized_name) > 50:
+    if len(sanitized_name) > 100:
         return hashlib.sha1(sanitized_name.encode()).hexdigest()
     
     return sanitized_name
