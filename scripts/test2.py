@@ -3,7 +3,7 @@ import json
 with open('data/Phone.json') as f:
     for line in f:
         phone_data = json.loads(line.strip())
-        if phone_data['Title'] == 'iPhone 4 Rear Panel Replacement':
+        if phone_data['Title'] == 'iPhone 1st Generation Headphone Jack Replacement':
             for step_data in phone_data.get("Steps", []):
                 step_tools = step_data.get("Tools_extracted", [])
                 for tool_name in step_tools:

@@ -78,11 +78,13 @@ with open('data/Phone.json') as f:
             tools.append(tool_instance)
         
         # Link tools to the procedure
+        tools = list(set(tools))
         if tools:
             procedure_instance.uses_tool = tools
         
-        # Create instances of Steps
+        # Create instances of Steps and track tools mentioned in steps
         steps = []
+        step_mentioned_tools = set()
         for step_data in phone_data.get("Steps", []):
             # Generate a step identifier based on the step text
             step_text_content = step_data.get("Text_raw", "").strip()
@@ -101,15 +103,24 @@ with open('data/Phone.json') as f:
             for tool_name in step_tools:
                 if tool_name and tool_name != "NA":
                     tool_instance = Tool(sanitize_name(tool_name))
-                    step_instance.mentioned_tools.append(tool_name)
+
+                    # Add to the mentioned tools if not already included
+                    if tool_instance not in step_mentioned_tools:
+                        step_instance.mentioned_tools.append(tool_name)
+                        step_mentioned_tools.add(tool_instance)
+
                     # Add to the procedure's toolbox if not already included
                     if tool_instance not in procedure_instance.uses_tool:
                         procedure_instance.uses_tool.append(tool_instance)
 
         # Link steps to the procedure
+        steps = list(set(steps))
         if steps:
             procedure_instance.has_step = steps
         
+        # Compare tools in procedure to tools mentioned in steps
+        unmentioned_tools = set(procedure_instance.uses_tool) - step_mentioned_tools
+
         # Update the steps list in the dictionary
         procedure_instances[procedure_instance] = (procedure_instances[procedure_instance][0], steps)
 
