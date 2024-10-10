@@ -30,9 +30,11 @@ num_steps = ontology.num_steps
 def sanitize_name(name):
     sanitized_name = name.strip().replace(" ", "_").replace("-", "_").replace("/", "_").replace(":", "").replace("#", "")
     sanitized_name = ''.join(c for c in sanitized_name if c.isalnum() or c in ['_', '-'])
+
     # If the name is too long, hash it
     if len(sanitized_name) > 50:
         return hashlib.sha1(sanitized_name.encode()).hexdigest()
+    
     return sanitized_name
 
 # Dictionary to store procedure instances, their steps, and associated items/parts
@@ -97,11 +99,12 @@ with open('data/Phone.json') as f:
             # Check for tools mentioned in the step and add them to the procedure's toolbox if missing
             step_tools = step_data.get("Tools_extracted", [])
             for tool_name in step_tools:
-                tool_instance = Tool(sanitize_name(tool_name))
-                step_instance.mentioned_tools.append(tool_name)
-                # Add to the procedure's toolbox if not already included
-                if tool_instance not in procedure_instance.uses_tool:
-                    procedure_instance.uses_tool.append(tool_instance)
+                if tool_name and tool_name != "NA":
+                    tool_instance = Tool(sanitize_name(tool_name))
+                    step_instance.mentioned_tools.append(tool_name)
+                    # Add to the procedure's toolbox if not already included
+                    if tool_instance not in procedure_instance.uses_tool:
+                        procedure_instance.uses_tool.append(tool_instance)
 
         # Link steps to the procedure
         if steps:
