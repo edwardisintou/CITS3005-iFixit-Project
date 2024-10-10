@@ -11,7 +11,7 @@ def format_result(name):
 # SPARQL queries on the graph
 # Query 1: Find all procedures with more than 6 steps
 query1 = """
-    SELECT DISTINCT ?procedure
+    SELECT DISTINCT ?procedure (COUNT(?step) AS ?stepCount)
     WHERE {
       ?procedure rdf:type <http://example.org/phone_knowledge_graph.owl#Procedure> .
       ?procedure <http://example.org/phone_knowledge_graph.owl#has_step> ?step .
@@ -20,10 +20,11 @@ query1 = """
     HAVING (COUNT(?step) > 6)
 """
 
-# query1_results = g.query(query1)
-# for result in query1_results:
-#     procedure = str(result[0]).split('#')[-1]
-#     print(format_result(procedure))
+query1_results = g.query(query1)
+for result in query1_results:
+    procedure = str(result[0]).split('#')[-1]
+    step_count = result[1]  # This will be the count of steps
+    print(f"Procedure {format_result(procedure)} has {step_count} steps")
 
 
 # Query 2: Find all items that have more than 10 procedures written for them;
@@ -62,7 +63,7 @@ WHERE {
 #     formatted_procedure = format_result(procedure)
 #     formatted_tool = format_result(tool)
     
-#     print(f"Procedure: {formatted_procedure} has Tool {formatted_tool} that is never mentioned")
+#     print(f"Procedure {formatted_procedure} has Tool {formatted_tool} that is never mentioned")
 
 
 # Query 4: Flag potential hazards in the procedure by identifying steps with works like "careful" and "dangerous"
@@ -78,12 +79,12 @@ WHERE {
 }
 """
 
-query4_results = g.query(query4)
-for result in query4_results:
-    procedure = str(result[0]).split('#')[-1]
-    step = result[2]
+# query4_results = g.query(query4)
+# for result in query4_results:
+#     procedure = str(result[0]).split('#')[-1]
+#     step = result[2]
     
-    print(f"Procedure: {format_result(procedure)}")
-    print(f"Step: {step}")
-    print("----")
+#     print(f"Procedure: {format_result(procedure)}")
+#     print(f"Step: {step}")
+#     print("----")
 
