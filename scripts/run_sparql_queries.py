@@ -47,24 +47,22 @@ HAVING (COUNT(?procedure) > 10)
 
 # Query 3: Find all procedures that include a tool that is never mentioned in the procedure steps
 query3 = """
-SELECT ?procedure ?tool
+PREFIX ns: <http://example.org/phone_knowledge_graph.owl#>
+
+SELECT DISTINCT ?procedure ?tool
 WHERE {
-  ?procedure a <http://example.org/phone_knowledge_graph.owl#Procedure> ;
-             <http://example.org/phone_knowledge_graph.owl#uses_tool> ?tool .
-  
-  FILTER NOT EXISTS {
-    ?step a <http://example.org/phone_knowledge_graph.owl#Step> ;
-          <http://example.org/phone_knowledge_graph.owl#is_step_of> ?procedure ;
-          <http://example.org/phone_knowledge_graph.owl#mentioned_tools> ?tool .
-  }
+  ?procedure a ns:Procedure ;
+             ns:unmentioned_tools ?tool .
 }
 """
 
-query3_results = g.query(query3)
-for result in query3_results:
+query_results3 = g.query(query3)
+for result in query_results3:
     procedure = str(result[0]).split('#')[-1]
     tool = str(result[1]).split('#')[-1]
+    
     formatted_procedure = format_result(procedure)
     formatted_tool = format_result(tool)
-    print(f"Procedure: {formatted_procedure}, Tool: {formatted_tool}")
+    
+    print(f"Procedure: {formatted_procedure} has Tool {formatted_tool} that is never mentioned")
 

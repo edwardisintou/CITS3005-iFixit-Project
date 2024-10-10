@@ -73,6 +73,10 @@ with ontology:
         domain = [Item]
         range = [Procedure]
 
+    class unmentioned_tools(ObjectProperty):
+        domain = [Procedure]
+        range = [Tool]
+
     # Data properties
     class has_title(DataProperty):  # Store the title of the procedure
         domain = [Procedure]

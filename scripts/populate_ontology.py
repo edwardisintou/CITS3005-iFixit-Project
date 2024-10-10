@@ -24,6 +24,7 @@ has_sub_procedure = ontology.has_sub_procedure
 has_title = ontology.has_title
 step_text = ontology.step_text
 mentioned_tools = ontology.mentioned_tools
+unmentioned_tools = ontology.unmentioned_tools
 num_steps = ontology.num_steps
 
 # Function to sanitize names for use as ontology individuals
@@ -119,7 +120,9 @@ with open('data/Phone.json') as f:
             procedure_instance.has_step = steps
         
         # Compare tools in procedure to tools mentioned in steps
-        unmentioned_tools = set(procedure_instance.uses_tool) - step_mentioned_tools
+        unmentioned_tools_set = set(procedure_instance.uses_tool) - step_mentioned_tools
+        for unmentioned_tool in unmentioned_tools_set:
+            procedure_instance.unmentioned_tools.append(unmentioned_tool)
 
         # Update the steps list in the dictionary
         procedure_instances[procedure_instance] = (procedure_instances[procedure_instance][0], steps)
