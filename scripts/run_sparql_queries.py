@@ -47,22 +47,43 @@ HAVING (COUNT(?procedure) > 10)
 
 # Query 3: Find all procedures that include a tool that is never mentioned in the procedure steps
 query3 = """
-PREFIX ns: <http://example.org/phone_knowledge_graph.owl#>
-
 SELECT DISTINCT ?procedure ?tool
 WHERE {
-  ?procedure a ns:Procedure ;
-             ns:unmentioned_tools ?tool .
+  ?procedure a <http://example.org/phone_knowledge_graph.owl#Procedure> ;
+             <http://example.org/phone_knowledge_graph.owl#unmentioned_tools> ?tool .
 }
 """
 
-query_results3 = g.query(query3)
-for result in query_results3:
+# query_results3 = g.query(query3)
+# for result in query_results3:
+#     procedure = str(result[0]).split('#')[-1]
+#     tool = str(result[1]).split('#')[-1]
+    
+#     formatted_procedure = format_result(procedure)
+#     formatted_tool = format_result(tool)
+    
+#     print(f"Procedure: {formatted_procedure} has Tool {formatted_tool} that is never mentioned")
+
+
+# Query 4: Flag potential hazards in the procedure by identifying steps with works like "careful" and "dangerous"
+query4 = """
+SELECT DISTINCT ?procedure ?step ?stepText
+WHERE {
+  ?procedure a <http://example.org/phone_knowledge_graph.owl#Procedure> ;
+             <http://example.org/phone_knowledge_graph.owl#has_step> ?step .
+  
+  ?step <http://example.org/phone_knowledge_graph.owl#step_text> ?stepText .
+  
+  FILTER(CONTAINS(LCASE(?stepText), "careful") || CONTAINS(LCASE(?stepText), "dangerous"))
+}
+"""
+
+query4_results = g.query(query4)
+for result in query4_results:
     procedure = str(result[0]).split('#')[-1]
-    tool = str(result[1]).split('#')[-1]
+    step = result[2]
     
-    formatted_procedure = format_result(procedure)
-    formatted_tool = format_result(tool)
-    
-    print(f"Procedure: {formatted_procedure} has Tool {formatted_tool} that is never mentioned")
+    print(f"Procedure: {format_result(procedure)}")
+    print(f"Step: {step}")
+    print("----")
 
