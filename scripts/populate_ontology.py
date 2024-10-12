@@ -21,11 +21,9 @@ uses_tool = ontology.uses_tool
 has_step = ontology.has_step
 has_image = ontology.has_image
 has_sub_procedure = ontology.has_sub_procedure
-has_title = ontology.has_title
 step_text = ontology.step_text
 mentioned_tools = ontology.mentioned_tools
 unmentioned_tools = ontology.unmentioned_tools
-num_steps = ontology.num_steps
 
 # Function to sanitize names for use as ontology individuals
 def sanitize_name(name):
@@ -63,6 +61,7 @@ with open('data/Phone.json') as f:
 
             # Store the procedure and the part it belongs to
             procedure_instances[procedure_instance] = (part_instance, [])
+            
         else:
             # If "Subject" is empty or matches the item, create a procedure for the entire item
             procedure_instance = Procedure(sanitize_name(phone_data["Title"]))

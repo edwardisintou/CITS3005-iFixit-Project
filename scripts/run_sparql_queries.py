@@ -20,11 +20,11 @@ query1 = """
     HAVING (COUNT(?step) > 6)
 """
 
-query1_results = g.query(query1)
-for result in query1_results:
-    procedure = str(result[0]).split('#')[-1]
-    step_count = result[1]  # This will be the count of steps
-    print(f"Procedure {format_result(procedure)} has {step_count} steps")
+# query1_results = g.query(query1)
+# for result in query1_results:
+#     procedure = str(result[0]).split('#')[-1]
+#     step_count = result[1]  # This will be the count of steps
+#     print(f"Procedure {format_result(procedure)} has {step_count} steps")
 
 
 # Query 2: Find all items that have more than 10 procedures written for them;
@@ -79,12 +79,12 @@ WHERE {
 }
 """
 
-# query4_results = g.query(query4)
-# for result in query4_results:
-#     procedure = str(result[0]).split('#')[-1]
-#     step = result[2]
+query4_results = g.query(query4)
+for result in query4_results:
+    procedure = str(result[0]).split('#')[-1]
+    step = result[2]
     
-#     print(f"Procedure: {format_result(procedure)}")
-#     print(f"Step: {step}")
-#     print("----")
-
+    print(f"Procedure: {format_result(procedure)}")
+    print(f"Step: {step}")
+    print("----")
+    
