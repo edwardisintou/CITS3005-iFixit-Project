@@ -1,15 +1,15 @@
+# app/__init__.py
 from flask import Flask
+from .sparql_service import SparqlService
+from .routes import main_bp
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_mapping(SECRET_KEY='dev')
 
-    # Import and register blueprints or routes
-    from .routes import main_bp
+    # Load the SparqlService with your OWL files
     app.register_blueprint(main_bp)
-
-    @app.errorhandler(404)
-    def not_found(e):
-        return {"error": "Page not found"}, 404
+    ontology_path = "ontology/phone_ontology.owl"
+    knowledge_graph_path = "ontology/phone_knowledge_graph.owl"
+    app.sparql_service = SparqlService(ontology_path, knowledge_graph_path)
 
     return app
