@@ -4,21 +4,80 @@ from flask import request, jsonify, Blueprint, current_app, render_template
 def format_result(name):
     return name.replace('_', ' ')
 
+def unformat_result(name):
+    return name.replace(' ', '_')
+
 main_bp = Blueprint('main', __name__)
 
 # Home route: browse all classes and individuals
 @main_bp.route('/')
 def browse_graph():
     g = current_app.sparql_service.graph
-    query = """
-    SELECT ?class ?individual
+    
+    # Query for items and their related procedures and parts
+    query_items = """
+    SELECT DISTINCT ?item ?procedure ?part
     WHERE {
-        ?individual a ?class .
+      ?item a <http://example.org/phone_knowledge_graph.owl#Item> .
+      OPTIONAL { ?item (<http://example.org/phone_knowledge_graph.owl#has_procedure> | <http://example.org/phone_knowledge_graph.owl#has_part_procedure>) ?procedure . }
+      OPTIONAL { ?item <http://example.org/phone_knowledge_graph.owl#has_part> ?part . }
     }
     """
-    results = g.query(query)
-    data = [{"class": str(row[0]).split('#')[-1], "individual": str(row[1]).split('#')[-1]} for row in results]
+    
+    results = g.query(query_items)
+    
+    # Data structure to store the items and their related procedures and parts
+    data = {}
+    
+    for row in results:
+        item = format_result(str(row[0]).split('#')[-1])
+        procedure = format_result(str(row[1]).split('#')[-1]) if row[1] else None
+        part = format_result(str(row[2]).split('#')[-1]) if row[2] else None
+
+        # Initialize the item in the dictionary if not already present
+        if item not in data:
+            data[item] = {'procedures': set(), 'parts': set()}
+
+        # Add procedures and parts to the item
+        if procedure:
+            data[item]['procedures'].add(procedure)
+        if part:
+            data[item]['parts'].add(part)
+
     return render_template('browse.html', data=data)
+
+@main_bp.route('/procedure/<procedure>', methods=['GET'])
+def procedure_details(procedure):
+    g = current_app.sparql_service.graph
+    
+    # Revert the readable procedure name back to its original form with underscores
+    original_procedure = unformat_result(procedure)
+
+    # SPARQL query to retrieve the procedure's details
+    query_procedure = """
+    SELECT DISTINCT ?class ?relation ?value
+    WHERE {
+      <http://example.org/phone_knowledge_graph.owl#""" + original_procedure + """> a ?class .
+      OPTIONAL { <http://example.org/phone_knowledge_graph.owl#""" + original_procedure + """> ?relation ?value . }
+    }
+    """
+    
+    results = g.query(query_procedure)
+
+    # Format the results
+    procedure_data = {'name': format_result(procedure), 'class': '', 'relations': []}
+
+    for row in results:
+        procedure_class = format_result(str(row[0]).split('#')[-1])
+        relation = format_result(str(row[1]).split('#')[-1]) if row[1] else None
+        value = format_result(str(row[2]).split('#')[-1]) if row[2] else None
+
+        if procedure_class:
+            procedure_data['class'] = procedure_class
+        if relation and value:
+            procedure_data['relations'].append({'relation': relation, 'value': value})
+
+    return render_template('procedure_details.html', procedure_data=procedure_data)
 
 # Route to execute SPARQL queries
 @main_bp.route('/search', methods=['POST'])

@@ -1,9 +1,31 @@
 {% extends "layout.html" %}
+
 {% block content %}
-<h2>Browse the Knowledge Graph</h2>
-<ul>
-    {% for entry in data %}
-        <li><strong>Class:</strong> {{ entry.class }} | <strong>Individual:</strong> {{ entry.individual }}</li>
+<h2>Browse Items, Procedures, and Parts</h2>
+<table border="1">
+    <tr>
+        <th>Item</th>
+        <th>Procedures</th>
+        <th>Parts</th>
+    </tr>
+    {% for item, details in data.items() %}
+    <tr>
+        <td>{{ item }}</td>
+        <td>
+            <ul>
+                {% for procedure in details.procedures %}
+                    <li><a href="{{ url_for('main.procedure_details', procedure=procedure) }}">{{ procedure }}</a></li>
+                {% endfor %}
+            </ul>
+        </td>
+        <td>
+            <ul>
+            {% for part in details.parts %}
+                <li>{{ part }}</li>
+            {% endfor %}
+            </ul>
+        </td>
+    </tr>
     {% endfor %}
-</ul>
+</table>
 {% endblock %}
