@@ -32,7 +32,7 @@ query2 = """
 SELECT DISTINCT ?item (COUNT(?procedure) AS ?procedureCount)
 WHERE {
   ?item a <http://example.org/phone_knowledge_graph.owl#Item> ;
-        <http://example.org/phone_knowledge_graph.owl#has_procedure> ?procedure .
+        (<http://example.org/phone_knowledge_graph.owl#has_procedure> | <http://example.org/phone_knowledge_graph.owl#has_part_procedure>) ?procedure .
 }
 GROUP BY ?item
 HAVING (COUNT(?procedure) > 10)
@@ -43,10 +43,6 @@ for result in query2_results:
     item = str(result[0]).split('#')[-1]
     formatted_name = format_result(item)
     print(formatted_name, "has", result[1], "procedures")
-
-# Result prints nothing because there is no such item
-# This can be tested by printing items with less procedures (2 for example),
-# which results in the item 'iphone 4S' having the most procedures of 6
 
 
 # Query 3: Find all procedures that include a tool that is never mentioned in the procedure steps

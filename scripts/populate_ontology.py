@@ -17,6 +17,7 @@ Tool = ontology.Tool
 is_part_of = ontology.is_part_of
 has_part = ontology.has_part
 has_procedure = ontology.has_procedure
+has_part_procedure = ontology.has_part_procedure  # Added property
 uses_tool = ontology.uses_tool
 has_step = ontology.has_step
 has_image = ontology.has_image
@@ -58,6 +59,9 @@ with open('data/Phone.json') as f:
             # Create a procedure instance for this part
             procedure_instance = Procedure(sanitize_name(phone_data["Title"]))
             part_instance.has_procedure.append(procedure_instance)
+
+            # Link part's procedure to the main item using has_part_procedure
+            item_instance.has_part_procedure.append(procedure_instance)
 
             # Store the procedure and the part it belongs to
             procedure_instances[procedure_instance] = (part_instance, [])

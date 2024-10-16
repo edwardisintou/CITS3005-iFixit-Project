@@ -31,6 +31,10 @@ with ontology:
         range = [Item, Part]
         inverse_property = has_procedure
 
+    class has_part_procedure(ObjectProperty):
+        domain = [Item]
+        range = [Procedure]
+
     class uses_tool(ObjectProperty):
         domain = [Procedure]
         range = [Tool]
@@ -82,10 +86,15 @@ with ontology:
         range = [str]
 
     # Add restrictions
-    Item.equivalent_to = [has_part.some(Part) | has_procedure.some(Procedure)] # An Item can have parts or procedures
+    Item.equivalent_to = [has_part.some(Part) | has_procedure.some(Procedure) | has_part_procedure.some(Procedure)] # An Item can have parts or procedures
     Part.equivalent_to = [is_part_of.some(Item) | has_procedure.some(Procedure)]  # A Part can have procedures or be part of an Item
     Procedure.equivalent_to = [uses_tool.some(Tool) & has_step.some(Step)]  # A Procedure uses tools and has steps
     Step.equivalent_to = [has_image.some(Image)]  # A Step has an associated image
+
+    rule = Imp()
+    rule.set_as_rule("""
+        Item(?item), has_part(?item, ?part), has_procedure(?part, ?procedure) -> has_part_procedure(?item, ?procedure)
+    """)
 
 # Save the ontology
 ontology.save(file="ontology/phone_ontology.owl")
