@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Query Results</h2>
+<ul>
+    {% for result in results %}
+        <li>{{ result.subject }} - {{ result.predicate }} - {{ result.object }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

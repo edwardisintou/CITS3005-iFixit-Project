@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Browse the Knowledge Graph</h2>
+<ul>
+    {% for entry in data %}
+        <li><strong>Class:</strong> {{ entry.class }} | <strong>Individual:</strong> {{ entry.individual }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
