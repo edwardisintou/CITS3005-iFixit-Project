@@ -1,5 +1,9 @@
 from flask import request, jsonify, Blueprint, current_app, render_template
 
+# Function to format the result by replacing underscores with spaces
+def format_result(name):
+    return name.replace('_', ' ')
+
 main_bp = Blueprint('main', __name__)
 
 # Home route: browse all classes and individuals
@@ -17,7 +21,7 @@ def browse_graph():
     return render_template('browse.html', data=data)
 
 # Route to execute SPARQL queries
-@main_bp.route('/query', methods=['POST'])
+@main_bp.route('/search', methods=['POST'])
 def query_graph():
     query = request.form.get('query')
     if not query:
@@ -31,19 +35,31 @@ def query_graph():
         return jsonify({'error': str(e)}), 500
 
 # Route to identify errors in the data (validation)
-@main_bp.route('/validate')
-def validate_data():
-    g = current_app.sparql_service.graph
+@main_bp.route('/validate', methods=['GET'])
+def validate_errors():
+    # Query for tools used but not mentioned in the procedure steps
     query = """
-    SELECT ?procedure ?tool
+    SELECT DISTINCT ?procedure ?tool
     WHERE {
-        ?procedure a <http://example.org/phone_knowledge_graph.owl#Procedure> ;
-                   <http://example.org/phone_knowledge_graph.owl#uses_tool> ?tool .
-        FILTER NOT EXISTS {
-            ?step <http://example.org/phone_knowledge_graph.owl#mentioned_tools> ?tool .
-        }
+      ?procedure a <http://example.org/phone_knowledge_graph.owl#Procedure> ;
+                 <http://example.org/phone_knowledge_graph.owl#unmentioned_tools> ?tool .
     }
     """
-    results = g.query(query)
-    errors = [{"procedure": str(row[0]).split('#')[-1], "tool": str(row[1]).split('#')[-1]} for row in results]
-    return render_template('errors.html', errors=errors)
+    try:
+        # Run the query
+        results = current_app.sparql_service.run_query(query)
+        
+        # Format and return the results
+        formatted_results = []
+        for result in results:
+            procedure = str(result[0]).split('#')[-1]
+            tool = str(result[1]).split('#')[-1]
+            formatted_procedure = format_result(procedure)
+            formatted_tool = format_result(tool)
+            formatted_results.append({'procedure': formatted_procedure, 'tool': formatted_tool})
+
+        # Render the results to the validation template
+        return render_template('errors.html', errors=formatted_results)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
