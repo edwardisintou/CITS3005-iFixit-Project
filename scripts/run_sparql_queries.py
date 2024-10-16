@@ -28,22 +28,21 @@ query1 = """
 
 
 # Query 2: Find all items that have more than 10 procedures written for them;
-# Result prints nothing because there is no such item
 query2 = """
 SELECT DISTINCT ?item (COUNT(?procedure) AS ?procedureCount)
 WHERE {
   ?item a <http://example.org/phone_knowledge_graph.owl#Item> ;
-        <http://example.org/phone_knowledge_graph.owl#has_procedure> ?procedure .
+        (<http://example.org/phone_knowledge_graph.owl#has_procedure> | <http://example.org/phone_knowledge_graph.owl#has_part_procedure>) ?procedure .
 }
 GROUP BY ?item
 HAVING (COUNT(?procedure) > 10)
 """
 
-# query2_results = g.query(query2)
-# for result in query2_results:
-#     item = str(result[0]).split('#')[-1]
-#     formatted_name = format_result(item)
-#     print(formatted_name, "has", result[1], "procedures")
+query2_results = g.query(query2)
+for result in query2_results:
+    item = str(result[0]).split('#')[-1]
+    formatted_name = format_result(item)
+    print(formatted_name, "has", result[1], "procedures")
 
 
 # Query 3: Find all procedures that include a tool that is never mentioned in the procedure steps
@@ -79,12 +78,11 @@ WHERE {
 }
 """
 
-query4_results = g.query(query4)
-for result in query4_results:
-    procedure = str(result[0]).split('#')[-1]
-    step = result[2]
+# query4_results = g.query(query4)
+# for result in query4_results:
+#     procedure = str(result[0]).split('#')[-1]
+#     step = result[2]
     
-    print(f"Procedure: {format_result(procedure)}")
-    print(f"Step: {step}")
-    print("----")
-    
+#     print(f"Procedure: {format_result(procedure)}")
+#     print(f"Step: {step}")
+#     print("----")

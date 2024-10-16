@@ -17,6 +17,7 @@ Tool = ontology.Tool
 is_part_of = ontology.is_part_of
 has_part = ontology.has_part
 has_procedure = ontology.has_procedure
+has_part_procedure = ontology.has_part_procedure  # Added property
 uses_tool = ontology.uses_tool
 has_step = ontology.has_step
 has_image = ontology.has_image
@@ -58,6 +59,9 @@ with open('data/Phone.json') as f:
             # Create a procedure instance for this part
             procedure_instance = Procedure(sanitize_name(phone_data["Title"]))
             part_instance.has_procedure.append(procedure_instance)
+
+            # Link part's procedure to the main item using has_part_procedure
+            item_instance.has_part_procedure.append(procedure_instance)
 
             # Store the procedure and the part it belongs to
             procedure_instances[procedure_instance] = (part_instance, [])
@@ -138,10 +142,6 @@ for proc1, (item1, steps1) in procedure_instances.items():
                 # Avoid adding duplicate sub-procedures
                 if proc1 not in proc2.has_sub_procedure:
                     proc2.has_sub_procedure.append(proc1)
-            elif item1 == item2 or item2 in item1.has_part:
-                # Ensure proc2 is also added as a sub-procedure of proc1 if applicable
-                if proc2 not in proc1.has_sub_procedure:
-                    proc1.has_sub_procedure.append(proc2)
 
 # Save the populated ontology
 ontology.save(file="ontology/phone_knowledge_graph.owl")
