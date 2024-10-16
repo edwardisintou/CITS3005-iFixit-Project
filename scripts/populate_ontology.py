@@ -138,10 +138,6 @@ for proc1, (item1, steps1) in procedure_instances.items():
                 # Avoid adding duplicate sub-procedures
                 if proc1 not in proc2.has_sub_procedure:
                     proc2.has_sub_procedure.append(proc1)
-            elif item1 == item2 or item2 in item1.has_part:
-                # Ensure proc2 is also added as a sub-procedure of proc1 if applicable
-                if proc2 not in proc1.has_sub_procedure:
-                    proc1.has_sub_procedure.append(proc2)
 
 # Save the populated ontology
 ontology.save(file="ontology/phone_knowledge_graph.owl")
