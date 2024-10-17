@@ -1,23 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Phone Knowledge Graph Search</title>
-</head>
-<body>
-    <h1>Search the Phone Knowledge Graph</h1>
-    <form method="POST">
-        <textarea name="query" rows="5" cols="80" placeholder="Enter your Query"></textarea><br>
-        <button type="submit">Search</button>
-    </form>
+{% extends "layout.html" %}
+{% block content %}
+<h1>Search the Knowledge Graph</h1>
 
-    {% if results %}
-        <h2>Results</h2>
-        <ul>
-        {% for row in results %}
-            <li>{{ row }}</li>
+<form method="POST">
+    <h3>Select a Predefined Query</h3>
+    <h3>Alert: The predefined queries will overwrite the SPARQL Query if both are inputted</h3>
+    <select name="query_type">
+        <option value="">-- Select a query --</option>
+        {% for key, query in premade_queries.items() %}
+            <option value="{{ key }}">{{ query.description }}</option>
         {% endfor %}
-        </ul>
-    {% endif %}
-</body>
-</html>
+    </select>
+
+    <h3>Or Enter a Custom SPARQL Query</h3>
+    <textarea name="custom_query" rows="5" cols="80" placeholder="Enter your custom SPARQL query"></textarea><br>
+
+    <button type="submit">Search</button>
+</form>
+
+{% if results %}
+    <h2>Results</h2>
+    <table border="1">
+        <tr>
+            {% for header in results[0] %}
+                <th>{{ header }}</th>
+            {% endfor %}
+        </tr>
+        {% for row in results[1:] %}
+            <tr>
+                {% for cell in row %}
+                    <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+
+<hr>
+<!-- Example search query and explanation -->
+<h3>Example SPARQL Search Query</h3>
+<pre>
+SELECT DISTINCT ?part ?procedure
+WHERE {
+  ?part a &lt;http://example.org/phone_knowledge_graph.owl#Part&gt; .
+  ?part &lt;http://example.org/phone_knowledge_graph.owl#has_procedure&gt; ?procedure .
+  FILTER(CONTAINS(STR(?part), "Camera"))
+}
+</pre>
+
+<p><strong>Explanation:</strong> This query finds all parts in the knowledge graph that contain the word "Camera" in their names, and retrieves the procedures associated with these parts.</p>
+
+{% endblock %}

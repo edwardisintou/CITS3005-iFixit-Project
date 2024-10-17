@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Procedure: {{ procedure_data.name }}</h1>
+<p>Class: {{ procedure_data.class }}</p>
+<h2>Relations:</h2>
+<ul>
+{% for relation in procedure_data.relations %}
+    <li>{{ relation.relation }}: {{ relation.value }}</li>
+{% endfor %}
+</ul>
+<a href="{{ url_for('main.browse_graph') }}">Back to Browse</a>
+{% endblock %}

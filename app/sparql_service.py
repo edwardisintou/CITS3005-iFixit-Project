@@ -1,4 +1,3 @@
-# app/sparql_service.py
 from rdflib import Graph
 
 class SparqlService:

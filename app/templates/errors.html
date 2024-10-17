@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Data Validation Errors</h2>
+<ul>
+    {% for error in errors %}
+        <li>Procedure: {{ error.procedure }}, Tool: {{ error.tool }} (not mentioned in any step)</li>
+    {% endfor %}
+</ul>
+{% endblock %}

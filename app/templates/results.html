@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Search Results</h1>
+
+{% if headers and results %}
+    <table border="1">
+        <!-- Display the headers -->
+        <tr>
+            {% for header in headers %}
+                <th>{{ header }}</th>
+            {% endfor %}
+        </tr>
+        
+        <!-- Display the results -->
+        {% for row in results %}
+            <tr>
+                {% for col in row %}
+                    <td>{{ col }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No results found.</p>
+{% endif %}
+
+<a href="{{ url_for('main.search_graph') }}">Back to Search</a>
+{% endblock %}
