@@ -4,6 +4,7 @@
 
 <form method="POST">
     <h3>Select a Predefined Query</h3>
+    <h3>Alert: The predefined queries will overwrite the SPARQL Query if both are inputted</h3>
     <select name="query_type">
         <option value="">-- Select a query --</option>
         {% for key, query in premade_queries.items() %}
