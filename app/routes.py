@@ -53,12 +53,13 @@ def procedure_details(procedure):
     # Revert the readable procedure name back to its original form with underscores
     original_procedure = unformat_result(procedure)
 
-    # SPARQL query to retrieve the procedure's details
+    # SPARQL query to retrieve the procedure's details and step text where available
     query_procedure = f"""
-    SELECT DISTINCT ?class ?relation ?value
+    SELECT DISTINCT ?class ?relation ?value ?stepText
     WHERE {{
       <http://example.org/phone_knowledge_graph.owl#{original_procedure}> a ?class .
       OPTIONAL {{ <http://example.org/phone_knowledge_graph.owl#{original_procedure}> ?relation ?value . }}
+      OPTIONAL {{ ?value <http://example.org/phone_knowledge_graph.owl#step_text> ?stepText . }}
     }}
     """
 
@@ -72,12 +73,17 @@ def procedure_details(procedure):
         procedure_class = format_result(str(row[0]).split('#')[-1])
         relation = format_result(str(row[1]).split('#')[-1]) if row[1] else None
         value = format_result(str(row[2]).split('#')[-1]) if row[2] else None
+        step_text = row[3] if row[3] else None  # Check for step_text
 
         if procedure_class:
             procedure_data['class'] = procedure_class
-        if relation and value and (relation, value) not in seen_relations:
-            procedure_data['relations'].append({'relation': relation, 'value': value})
-            seen_relations.add((relation, value))  # Track the pair to prevent duplication
+        if relation:
+            # If it's a step and there's readable text, prefer that over the identifier
+            if relation == "has step" and step_text:
+                value = step_text
+            if value and (relation, value) not in seen_relations:
+                procedure_data['relations'].append({'relation': relation, 'value': value})
+                seen_relations.add((relation, value))  # Track the pair to prevent duplication
 
     return render_template('procedure_details.html', procedure_data=procedure_data)
 
