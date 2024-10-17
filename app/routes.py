@@ -65,10 +65,19 @@ def procedure_details(procedure):
 
     results = g.query(query_procedure)
 
+    # Define the priority for different relations
+    relation_priority = {
+        'type': 1,
+        'has sub procedure': 2,
+        'uses tool': 3,
+        'unmentioned tools': 4,
+        'has step': 5
+    }
+
     # Format the results
     procedure_data = {'name': format_result(procedure), 'class': '', 'relations': []}
-
     seen_relations = set()  # Track seen relations to avoid duplicates
+
     for row in results:
         procedure_class = format_result(str(row[0]).split('#')[-1])
         relation = format_result(str(row[1]).split('#')[-1]) if row[1] else None
@@ -85,7 +94,11 @@ def procedure_details(procedure):
                 procedure_data['relations'].append({'relation': relation, 'value': value})
                 seen_relations.add((relation, value))  # Track the pair to prevent duplication
 
+    # Sort relations by the predefined priority
+    procedure_data['relations'].sort(key=lambda x: relation_priority.get(x['relation'], 99))  # Default to low priority if not in dict
+
     return render_template('procedure_details.html', procedure_data=procedure_data)
+
 
 # Route to execute SPARQL queries
 @main_bp.route('/search', methods=['POST'])
