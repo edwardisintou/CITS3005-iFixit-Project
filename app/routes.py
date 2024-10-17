@@ -54,19 +54,20 @@ def procedure_details(procedure):
     original_procedure = unformat_result(procedure)
 
     # SPARQL query to retrieve the procedure's details
-    query_procedure = """
+    query_procedure = f"""
     SELECT DISTINCT ?class ?relation ?value
-    WHERE {
-      <http://example.org/phone_knowledge_graph.owl#""" + original_procedure + """> a ?class .
-      OPTIONAL { <http://example.org/phone_knowledge_graph.owl#""" + original_procedure + """> ?relation ?value . }
-    }
+    WHERE {{
+      <http://example.org/phone_knowledge_graph.owl#{original_procedure}> a ?class .
+      OPTIONAL {{ <http://example.org/phone_knowledge_graph.owl#{original_procedure}> ?relation ?value . }}
+    }}
     """
-    
+
     results = g.query(query_procedure)
 
     # Format the results
     procedure_data = {'name': format_result(procedure), 'class': '', 'relations': []}
 
+    seen_relations = set()  # Track seen relations to avoid duplicates
     for row in results:
         procedure_class = format_result(str(row[0]).split('#')[-1])
         relation = format_result(str(row[1]).split('#')[-1]) if row[1] else None
@@ -74,8 +75,9 @@ def procedure_details(procedure):
 
         if procedure_class:
             procedure_data['class'] = procedure_class
-        if relation and value:
+        if relation and value and (relation, value) not in seen_relations:
             procedure_data['relations'].append({'relation': relation, 'value': value})
+            seen_relations.add((relation, value))  # Track the pair to prevent duplication
 
     return render_template('procedure_details.html', procedure_data=procedure_data)
 
