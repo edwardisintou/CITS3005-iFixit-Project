@@ -34,4 +34,19 @@
         {% endfor %}
     </table>
 {% endif %}
+
+<hr>
+<!-- Example search query and explanation -->
+<h3>Example SPARQL Search Query</h3>
+<pre>
+SELECT DISTINCT ?part ?procedure
+WHERE {
+  ?part a &lt;http://example.org/phone_knowledge_graph.owl#Part&gt; .
+  ?part &lt;http://example.org/phone_knowledge_graph.owl#has_procedure&gt; ?procedure .
+  FILTER(CONTAINS(STR(?part), "Camera"))
+}
+</pre>
+
+<p><strong>Explanation:</strong> This query finds all parts in the knowledge graph that contain the word "Camera" in their names, and retrieves the procedures associated with these parts.</p>
+
 {% endblock %}

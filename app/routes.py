@@ -204,10 +204,12 @@ def search_graph():
             elif query_type == 'query4':
                 headers = ['Procedure', 'Step']
             else:
-                headers = []
+                headers = ['Result']
         elif custom_query:
-            query = custom_query
-            headers = []  # No headers for custom queries
+            query = custom_query.strip()
+            if not query:
+                return jsonify({'error': 'Custom query is empty'}), 400
+            headers = ['Result']  # Default for custom queries
         else:
             return jsonify({'error': 'No valid query provided'}), 400
 
@@ -215,7 +217,7 @@ def search_graph():
             # Run the query
             results = g.query(query)
 
-            # Format the results for query4 to only show Procedure and Step Text
+            # Handle formatting for predefined queries, especially for query4 (Procedure and Step Text)
             formatted_results = []
             if query_type == 'query4':  # Adjust formatting specifically for Query 4
                 for result in results:
@@ -223,11 +225,16 @@ def search_graph():
                     step_text = result[2]  # Actual step text
                     formatted_results.append([procedure, step_text])
             else:
-                # Format results for other queries
+                # Format results for other queries, including custom queries
                 formatted_results = [
-                    [format_result(str(val).split('#')[-1]) if val else '' for val in result]
+                    [format_result(str(val).split('#')[-1]) if val and '#' in str(val) else str(val)
+                     for val in result]
                     for result in results
                 ]
+
+            # Check if there are no results found
+            if not formatted_results:
+                return render_template('results.html', headers=headers, results=[], message="No results found.")
 
             # Pass both the headers and the results to the template
             return render_template('results.html', headers=headers, results=formatted_results)
