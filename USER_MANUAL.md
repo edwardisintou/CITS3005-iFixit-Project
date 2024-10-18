@@ -2,7 +2,7 @@ User Manual for Ontology-based Knowledge Graph Application:
 
 
 
-1. Overview of the Ontology Schema
+## 1. Overview of the Ontology Schema
 
 This ontology models the relationships between Items, Parts, Procedures, Tools, Steps, and Images. Key relationships include:
 
@@ -40,11 +40,11 @@ Schema Diagram Summary
         Object Properties: has_part, is_part_of, has_procedure, uses_tool, has_step, etc.
         Datatype Properties: step_text (for instructions), mentioned_tools (tools listed in a step).
 
-2. Example Queries
+## 2. Example Queries
 
 Here are some example SPARQL queries to help you interact with the knowledge graph:
 
-1. Retrieve all parts of an item (e.g., a phone):
+### 1. Retrieve all parts of an item (e.g., a phone):
 
 
 ```
@@ -56,7 +56,7 @@ WHERE {
 ```
 Interpretation: This query lists all the parts associated with items, such as the battery or screen of a phone.
 
-2. List procedures related to a specific part (e.g., battery):
+### 2. List procedures related to a specific part (e.g., battery):
 
 ```
 SELECT DISTINCT ?procedure 
@@ -70,7 +70,7 @@ WHERE {
 Interpretation: This query finds procedures like “Battery Replacement” for the given part.
 
 
-3. Find tools used in a specific procedure (e.g., Screen Replacement):
+### 3. Find tools used in a specific procedure (e.g., Screen Replacement):
 
 ```
 SELECT ?tool 
@@ -84,7 +84,7 @@ WHERE {
 Interpretation: The result shows tools needed, such as a screwdriver.
 
 
-4. Retrieve all steps and corresponding images for a procedure:
+### 4. Retrieve all steps and corresponding images for a procedure:
 
 ```
 SELECT ?stepText ?image
@@ -100,12 +100,12 @@ WHERE {
 Interpretation: Lists steps for a procedure with associated images for better visualization.
 
 
-3. Managing Data in the Knowledge Graph*******
+## 3. Managing Data in the Knowledge Graph*******
 Adding New Data
 
 
 
-4. Adding or Modifying Ontology Rules*********
+## 4. Adding or Modifying Ontology Rules*********
 Adding New Rules
 
 If you want to extend the ontology, you can add new rules using OWL.
@@ -125,7 +125,7 @@ Updating Ontology Rules
     
 
 
-1. Creating the Knowledge Graph
+## 5. Creating the Knowledge Graph
 
     Running the Scripts:
     Open your terminal and run the following commands to define the ontology and populate the knowledge graph:
@@ -136,7 +136,7 @@ Updating Ontology Rules
     This creates the ontology and knowledge graph files.
 
 
-2. Using the web-application:
+## 6. Using the web-application:
 
     Setting Up the Environment:
     From the `CITS3005-iFixit-Project` directory, install dependancies from terminal:
@@ -146,7 +146,7 @@ Updating Ontology Rules
     `python run.py` 
 
 
-3. Using Flask App:
+## 7. Using Flask App:
 
     Use the navigation bar to navigate through the web page using the `Browse`, `Validate Data` and `Search` toggles:
 
@@ -158,7 +158,7 @@ Updating Ontology Rules
 
 
 
-7. Troubleshooting and FAQ
+## 8. Troubleshooting and FAQ
 
     Q: Why is my query not returning results?
 
@@ -173,7 +173,7 @@ Updating Ontology Rules
 
         Yes, you can add new classes and properties to the OWL/XML file. Ensure they follow the existing structure to avoid conflicts.
 
-8. Best Practices:
+## 9. Best Practices:
 
         Use Descriptive Labels: Ensure new items and procedures have meaningful names to simplify querying.
         Maintain Ontology Consistency: Follow schema rules when adding or modifying data.
