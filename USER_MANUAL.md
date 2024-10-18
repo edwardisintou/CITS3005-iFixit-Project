@@ -127,7 +127,7 @@ Before creating the knowledge graph and running the web application, you need to
 
 Run the following command from the root of the project directory `CITS3005-iFixit-Project` to create a virtual environment called `venv`:
 
-```code
+```bash
 python -m venv venv
 ```
 
