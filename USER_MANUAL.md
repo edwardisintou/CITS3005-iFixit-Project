@@ -1,51 +1,66 @@
-User Manual for Ontology-based Knowledge Graph Application:
-
-
+# User Manual for Ontology-based Knowledge Graph Application:
 
 ## 1. Overview of the Ontology Schema
 
-This ontology models the relationships between Items, Parts, Procedures, Tools, Steps, and Images. Key relationships include:
+This ontology models the relationships between Items, Parts, Procedures, Tools, Steps, and Images. Below are the key components and their relationships:
 
-    Item: Represents a complete product (e.g., a phone).
-    
-    Part: Represents components or pieces of an item (e.g., a battery or screen).
-    
-    Procedure: Refers to a set of steps that outline how to repair or replace parts (e.g., "Battery Replacement").
+#### Classes:
 
-    Sub-procedure (of a procedure): A procedure for the same item or a part of that item.
-    
-    Tool: Represents tools required for a procedure (e.g., a screwdriver or spudger).
-    
-    Step: Each procedure consists of multiple steps describing detailed actions.
-    
-    Image: Visual aids (like photos) associated with steps for clearer instructions.
+- **Item**: Represents a complete product (e.g., a phone).
+  
+- **Part**: Represents components or pieces of an item (e.g., a battery or screen).
+  
+- **Procedure**: Refers to a set of steps that outline how to repair or replace parts (e.g., "Battery Replacement").
+  
+- **Sub-procedure**: A procedure related to the same item or a part of that item.
+  
+- **Tool**: Represents tools required for a procedure (e.g., a screwdriver or spudger).
+  
+- **Step**: Each procedure consists of multiple steps describing detailed actions.
+  
+- **Image**: Visual aids (like photos) associated with steps for clearer instructions.
 
+#### Relationships Between Classes:
 
-    Item ↔ Part: An Item has Parts (e.g., a phone has a battery) using has_part / is_part_of.
+- **Item ↔ Part**: An Item has Parts (e.g., a phone has a battery) using `has_part` / `is_part_of`.
 
-    Item/Part ↔ Procedure: An Item or Part may have a Procedure associated with it (e.g., repair instructions) via has_procedure / is_procedure_for.
+- **Item/Part ↔ Procedure**: An Item or Part may have a Procedure associated with it (e.g., repair instructions) via `has_procedure` / `is_procedure_for`.
 
-    Procedure ↔ Tool: A Procedure requires certain Tools through uses_tool / is_used_by.
-    
-    Procedure ↔ Step: Each Procedure contains multiple Steps with has_step / is_step_of.
-    
-    Step ↔ Image: Steps may be associated with an Image (e.g., a picture for better instruction).
-    
-    Procedure ↔ Sub-Procedure: Procedures can have nested or related procedures through has_sub_procedure / is_sub_procedure_of.
+- **Procedure ↔ Tool**: A Procedure requires certain Tools through `uses_tool` / `is_used_by`.
+  
+- **Procedure ↔ Step**: Each Procedure contains multiple Steps with `has_step` / `is_step_of`.
+  
+- **Step ↔ Image**: Steps may be associated with an Image (e.g., a picture for better instruction) using `has_image` / `is_image_of`.
+  
+- **Procedure ↔ Sub-Procedure**: Procedures can have nested or related procedures through `has_sub_procedure` / `is_sub_procedure_of`.
 
-Schema Diagram Summary
+#### Schema Summary:
 
-    Classes: Item, Part, Procedure, Tool, Step, Image.
-    Properties:
-        Object Properties: has_part, is_part_of, has_procedure, uses_tool, has_step, etc.
-        Datatype Properties: step_text (for instructions), mentioned_tools (tools listed in a step).
+- **Classes**: Item, Part, Procedure, Tool, Step, Image.
+
+- **Object Properties**:
+    - `has_part`: Relates an Item to its Parts.
+    - `has_procedure`: Links Items or Parts to their associated Procedures.
+    - `uses_tool`: Specifies the tools required for a Procedure.
+    - `has_step`: Specifies the steps within a Procedure.
+    - `has_image`: Links a Step to an Image for visual guidance.
+    - `has_sub_procedure`: Indicates related or nested Procedures.
+
+- **Data Properties**:
+    - `step_text`: Contains text instructions for a step.
+    - `mentioned_tools`: Lists tools mentioned in a step's description.
+
+#### Example Use Case:
+
+For a phone with parts such as a battery and screen, the ontology links repair instructions (Procedures) to both the phone (Item) and the individual parts (Parts). Each procedure consists of several steps, each of which may include images and mention tools required to complete the repair.
+
+This structure allows querying for repair procedures, tools used, steps involved, and associated parts of an item.
 
 ## 2. Example Queries
 
 Here are some example SPARQL queries to help you interact with the knowledge graph:
 
-### 1. Retrieve all parts of an item (e.g., a phone):
-
+#### 1. Retrieve all parts of an item (e.g., a phone):
 
 ```
 SELECT DISTINCT ?part 
@@ -56,7 +71,7 @@ WHERE {
 ```
 Interpretation: This query lists all the parts associated with items, such as the battery or screen of a phone.
 
-### 2. List procedures related to a specific part (e.g., battery):
+#### 2. List procedures related to a specific part (e.g., battery):
 
 ```
 SELECT DISTINCT ?procedure 
@@ -70,7 +85,7 @@ WHERE {
 Interpretation: This query finds procedures like “Battery Replacement” for the given part.
 
 
-### 3. Find tools used in a specific procedure (e.g., Screen Replacement):
+#### 3. Find tools used in a specific procedure (e.g., Screen Replacement):
 
 ```
 SELECT ?tool 
@@ -84,7 +99,7 @@ WHERE {
 Interpretation: The result shows tools needed, such as a screwdriver.
 
 
-### 4. Retrieve all steps and corresponding images for a procedure:
+#### 4. Retrieve all steps and corresponding images for a procedure:
 
 ```
 SELECT ?stepText ?image
