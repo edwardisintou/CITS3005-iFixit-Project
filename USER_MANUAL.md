@@ -51,10 +51,9 @@ This ontology models the relationships between Items, Parts, Procedures, Tools, 
     - `mentioned_tools`: Lists tools mentioned in a step's description.
 
 #### Example Use Case:
+- For a phone with parts such as a battery and screen, the ontology links repair instructions (Procedures) to both the phone (Item) and the individual parts (Parts). Each procedure consists of several steps, each of which may include images and mention tools required to complete the repair.
 
-For a phone with parts such as a battery and screen, the ontology links repair instructions (Procedures) to both the phone (Item) and the individual parts (Parts). Each procedure consists of several steps, each of which may include images and mention tools required to complete the repair.
-
-This structure allows querying for repair procedures, tools used, steps involved, and associated parts of an item.
+- This structure allows querying for repair procedures, tools used, steps involved, and associated parts of an item.
 
 ## 2. Example Queries
 
@@ -115,8 +114,146 @@ WHERE {
 Interpretation: Lists steps for a procedure with associated images for better visualization.
 
 
-## 3. Managing Data in the Knowledge Graph*******
-Adding New Data
+## 3. Managing Data in the Knowledge Graph
+
+### Adding New Data
+
+To add new data to the knowledge graph, follow these steps:
+
+#### 1. **Add new data to the JSON Data File (`Phone.json`)**:
+   - All new data must be added to the `Phone.json` file in the `data/` directory.
+   - Ensure that the new data includes details for Items, Parts, Procedures, Steps, and Tools.
+   - Each entry should follow the same structure as the existing records in the JSON file. For example:
+   
+   ```json
+   {
+       "Title": "iPhone 12 Screen Replacement",
+       "Category": "iPhone 12",
+       "Toolbox": [
+           {"Name": "screwdriver", "Url": "https://example.com/screwdriver"},
+           {"Name": "spudger", "Url": "https://example.com/spudger"}
+       ],
+       "Steps": [
+           {"Order": 1, "Text_raw": "Remove the screws with a screwdriver."},
+           {"Order": 2, "Text_raw": "Use a spudger to pry open the case."}
+       ],
+       "Subject": "Screen"
+   }
+   ```
+
+#### 2. Rerun the Scripts to Populate the Graph:
+
+Once you’ve added data to the Phone.json file, rerun the population script to update the knowledge graph:
+
+```
+python scripts/populate_ontology.py
+```
+
+#### 3. Check for Errors:
+
+Use the Validate Data option in the web application to ensure no inconsistencies exist in the populated data (e.g., tools not mentioned in steps).
+
+
+### Modifying Existing Data
+
+Modifying data in the knowledge graph follows a similar process to adding new data. If you need to update an existing record:
+
+#### 1. Modify the JSON Data File:
+   - Find the existing record you wish to modify in the `Phone.json` file.
+   - For example, if you need to update the steps of a procedure, modify the `Steps` field as needed:
+   
+   ```json
+   {
+      "Title": "iPhone 12 Screen Replacement",
+      "Category": "iPhone 12",
+      "Toolbox": [
+          {"Name": "screwdriver", "Url": "https://example.com/screwdriver"},
+          {"Name": "spudger", "Url": "https://example.com/spudger"}
+      ],
+      "Steps": [
+          {"Order": 1, "Text_raw": "Remove the screws with a screwdriver."},
+          {"Order": 2, "Text_raw": "Use a spudger to pry open the case."},
+          {"Order": 3, "Text_raw": "Remove the screen using a suction tool."}  // Modified step
+      ],
+      "Subject": "Screen"
+   }
+   ```
+
+#### 2. Rerun the Scripts to Populate the Graph:
+
+After making changes to the JSON file, rerun the population script:
+
+```
+python scripts/populate_ontology.py
+```
+
+#### 3. Validate the Changes:
+
+Use the Validate Data option to check that the modifications have been applied correctly and there are no inconsistencies in the updated data.
+
+
+### Deleting Data
+
+To delete data from the knowledge graph, follow these steps:
+
+#### 1. Remove the Entry from the JSON Data File:
+   - Locate the entry (item, part, procedure) that you want to delete in the `Phone.json` file and remove it completely from the file
+   - Example before deletion:
+
+   ```json
+   {
+      "Title": "iPhone 12 Screen Replacement",
+      "Category": "iPhone 12",
+      "Toolbox": [
+          {"Name": "screwdriver", "Url": "https://example.com/screwdriver"},
+          {"Name": "spudger", "Url": "https://example.com/spudger"}
+      ],
+      "Steps": [
+          {"Order": 1, "Text_raw": "Remove the screws with a screwdriver."},
+          {"Order": 2, "Text_raw": "Use a spudger to pry open the case."}
+      ],
+      "Subject": "Screen"
+   }
+   ```
+
+   - After deletion: Simply delete the entire entry for `iPhone 12 Screen Replacement`.
+
+#### 2. Rerun the Population Script:
+
+After removing the entry from the JSON file, rerun the population script to update the graph and reflect the deletion:
+
+```
+python scripts/populate_ontology.py
+```
+
+#### 3. Check for Inconsistencies:
+
+Use the Validate Data option to ensure there are no leftover references to the deleted data in the knowledge graph (e.g., a procedure that referenced a deleted part).
+
+#### 4. Alternative: Deleting Data Programmatically
+
+- If you want to delete data programmatically (instead of manually removing it from the JSON file), modify the RDFLib graph by running custom Python scripts.
+
+- Example Python code for deleting an individual from the knowledge graph:
+
+```python
+from rdflib import Graph, URIRef
+
+# Load the knowledge graph
+g = Graph()
+g.parse("ontology/phone_knowledge_graph.owl")
+
+# Define the URI of the individual to delete
+individual_uri = URIRef("http://example.org/phone_knowledge_graph.owl#iPhone_12_Screen_Replacement")
+
+# Remove all triples associated with the individual
+g.remove((individual_uri, None, None))
+
+# Save the updated graph
+g.serialize(destination="ontology/phone_knowledge_graph.owl", format="xml")
+```
+
+- After running this script, rerun the web application or scripts to reflect the changes.
 
 
 
