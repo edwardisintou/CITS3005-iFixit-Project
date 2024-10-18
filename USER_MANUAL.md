@@ -48,10 +48,10 @@ Here are some example SPARQL queries to help you interact with the knowledge gra
 
 
 ```
-SELECT ?part 
+SELECT DISTINCT ?part 
 WHERE {
-  ?item rdf:type :Item .
-  ?item :has_part ?part .
+  ?item a <http://example.org/phone_knowledge_graph.owl#Item> .
+  ?item <http://example.org/phone_knowledge_graph.owl#has_part> ?part .
 }
 ```
 Interpretation: This query lists all the parts associated with items, such as the battery or screen of a phone.
@@ -59,11 +59,11 @@ Interpretation: This query lists all the parts associated with items, such as th
 2. List procedures related to a specific part (e.g., battery):
 
 ```
-SELECT ?procedure 
+SELECT DISTINCT ?procedure 
 WHERE {
-  ?part rdf:type :Part .
-  ?part :has_procedure ?procedure .
-  FILTER (?part = :Battery)
+  ?part a <http://example.org/phone_knowledge_graph.owl#Part> .
+  ?part <http://example.org/phone_knowledge_graph.owl#has_procedure> ?procedure .
+  FILTER CONTAINS(STR(?part), "Battery")
 }
 ```
 
@@ -75,7 +75,9 @@ Interpretation: This query finds procedures like “Battery Replacement” for t
 ```
 SELECT ?tool 
 WHERE {
-  :ScreenReplacementProcedure :uses_tool ?tool .
+  ?procedure a <http://example.org/phone_knowledge_graph.owl#Procedure> .
+  ?procedure <http://example.org/phone_knowledge_graph.owl#uses_tool> ?tool .
+  FILTER(CONTAINS(STR(?procedure), "Screen_Replacement"))
 }
 ```
 
@@ -85,10 +87,13 @@ Interpretation: The result shows tools needed, such as a screwdriver.
 4. Retrieve all steps and corresponding images for a procedure:
 
 ```
-SELECT ?step ?image 
+SELECT ?stepText ?image
 WHERE {
-  ?procedure :has_step ?step .
-  ?step :has_image ?image .
+  ?procedure a <http://example.org/phone_knowledge_graph.owl#Procedure> .
+  ?procedure <http://example.org/phone_knowledge_graph.owl#has_step> ?step .
+  ?step <http://example.org/phone_knowledge_graph.owl#step_text> ?stepText .
+  OPTIONAL { ?step <http://example.org/phone_knowledge_graph.owl#has_image> ?image . }
+  FILTER(CONTAINS(STR(?procedure), "Screen_Replacement"))
 }
 ```
 
