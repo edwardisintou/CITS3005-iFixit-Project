@@ -51,6 +51,7 @@ This ontology models the relationships between Items, Parts, Procedures, Tools, 
     - `mentioned_tools`: Lists tools mentioned in a step's description.
 
 #### Example Use Case:
+
 - For a phone with parts such as a battery and screen, the ontology links repair instructions (Procedures) to both the phone (Item) and the individual parts (Parts). Each procedure consists of several steps, each of which may include images and mention tools required to complete the repair.
 
 - This structure allows querying for repair procedures, tools used, steps involved, and associated parts of an item.
@@ -83,7 +84,6 @@ WHERE {
 
 Interpretation: This query finds procedures like “Battery Replacement” for the given part.
 
-
 #### 3. Find tools used in a specific procedure (e.g., Screen Replacement):
 
 ```sparql
@@ -96,7 +96,6 @@ WHERE {
 ```
 
 Interpretation: The result shows tools needed, such as a screwdriver.
-
 
 #### 4. Retrieve all steps and corresponding images for a procedure:
 
@@ -233,25 +232,28 @@ This will start a local server where you can interact with the knowledge graph t
 To add new data to the knowledge graph, follow these steps:
 
 #### 1. **Add new data to the JSON Data File (`Phone.json`)**:
-   - All new data must be added to the `Phone.json` file in the `data/` directory.
-   - Ensure that the new data includes details for Items, Parts, Procedures, Steps, and Tools.
-   - Each entry should follow the same structure as the existing records in the JSON file. For example:
-   
-   ```json
-   {
-       "Title": "iPhone 12 Screen Replacement",
-       "Category": "iPhone 12",
-       "Toolbox": [
-           {"Name": "screwdriver", "Url": "https://example.com/screwdriver"},
-           {"Name": "spudger", "Url": "https://example.com/spudger"}
-       ],
-       "Steps": [
-           {"Order": 1, "Text_raw": "Remove the screws with a screwdriver."},
-           {"Order": 2, "Text_raw": "Use a spudger to pry open the case."}
-       ],
-       "Subject": "Screen"
-   }
-   ```
+
+- All new data must be added to the `Phone.json` file in the `data/` directory.
+
+- Ensure that the new data includes details for Items, Parts, Procedures, Steps, and Tools.
+
+- Each entry should follow the same structure as the existing records in the JSON file. For example:
+
+```json
+{
+  "Title": "iPhone 12 Screen Replacement",
+  "Category": "iPhone 12",
+  "Toolbox": [
+      {"Name": "screwdriver", "Url": "https://example.com/screwdriver"},
+      {"Name": "spudger", "Url": "https://example.com/spudger"}
+  ],
+  "Steps": [
+      {"Order": 1, "Text_raw": "Remove the screws with a screwdriver."},
+      {"Order": 2, "Text_raw": "Use a spudger to pry open the case."}
+  ],
+  "Subject": "Screen"
+}
+```
 
 #### 2. Rerun the Scripts to Populate the Graph:
 
@@ -271,25 +273,26 @@ Use the Validate Data option in the web application to ensure no inconsistencies
 Modifying data in the knowledge graph follows a similar process to adding new data. If you need to update an existing record:
 
 #### 1. Modify the JSON Data File:
-   - Find the existing record you wish to modify in the `Phone.json` file.
-   - For example, if you need to update the steps of a procedure, modify the `Steps` field as needed:
-   
-   ```json
-   {
-      "Title": "iPhone 12 Screen Replacement",
-      "Category": "iPhone 12",
-      "Toolbox": [
-          {"Name": "screwdriver", "Url": "https://example.com/screwdriver"},
-          {"Name": "spudger", "Url": "https://example.com/spudger"}
-      ],
-      "Steps": [
-          {"Order": 1, "Text_raw": "Remove the screws with a screwdriver."},
-          {"Order": 2, "Text_raw": "Use a spudger to pry open the case."},
-          {"Order": 3, "Text_raw": "Remove the screen using a suction tool."}  // Modified step
-      ],
-      "Subject": "Screen"
-   }
-   ```
+- Find the existing record you wish to modify in the `Phone.json` file.
+
+- For example, if you need to update the steps of a procedure, modify the `Steps` field as needed:
+
+```json
+{
+  "Title": "iPhone 12 Screen Replacement",
+  "Category": "iPhone 12",
+  "Toolbox": [
+      {"Name": "screwdriver", "Url": "https://example.com/screwdriver"},
+      {"Name": "spudger", "Url": "https://example.com/spudger"}
+  ],
+  "Steps": [
+      {"Order": 1, "Text_raw": "Remove the screws with a screwdriver."},
+      {"Order": 2, "Text_raw": "Use a spudger to pry open the case."},
+      {"Order": 3, "Text_raw": "Remove the screen using a suction tool."}  // Modified step
+  ],
+  "Subject": "Screen"
+}
+```
 
 #### 2. Rerun the Scripts to Populate the Graph:
 
@@ -308,26 +311,28 @@ Use the Validate Data option to check that the modifications have been applied c
 To delete data from the knowledge graph, follow these steps:
 
 #### 1. Remove the Entry from the JSON Data File:
-   - Locate the entry (item, part, procedure) that you want to delete in the `Phone.json` file and remove it completely from the file
-   - Example before deletion:
 
-   ```json
-   {
-      "Title": "iPhone 12 Screen Replacement",
-      "Category": "iPhone 12",
-      "Toolbox": [
-          {"Name": "screwdriver", "Url": "https://example.com/screwdriver"},
-          {"Name": "spudger", "Url": "https://example.com/spudger"}
-      ],
-      "Steps": [
-          {"Order": 1, "Text_raw": "Remove the screws with a screwdriver."},
-          {"Order": 2, "Text_raw": "Use a spudger to pry open the case."}
-      ],
-      "Subject": "Screen"
-   }
-   ```
+- Locate the entry (item, part, procedure) that you want to delete in the `Phone.json` file and remove it completely from the file
 
-   - After deletion: Simply delete the entire entry for `iPhone 12 Screen Replacement`.
+- Example before deletion:
+
+```json
+{
+  "Title": "iPhone 12 Screen Replacement",
+  "Category": "iPhone 12",
+  "Toolbox": [
+      {"Name": "screwdriver", "Url": "https://example.com/screwdriver"},
+      {"Name": "spudger", "Url": "https://example.com/spudger"}
+  ],
+  "Steps": [
+      {"Order": 1, "Text_raw": "Remove the screws with a screwdriver."},
+      {"Order": 2, "Text_raw": "Use a spudger to pry open the case."}
+  ],
+  "Subject": "Screen"
+}
+```
+
+- After deletion: Simply delete the entire entry for `iPhone 12 Screen Replacement`.
 
 #### 2. Rerun the Population Script:
 
@@ -414,7 +419,6 @@ Use the web app's `Search` or `Validate Data` options to ensure the new rules ar
 
 - Solution: Verify that the data has been correctly populated and that the ontology includes the expected relationships. Adjust the query filters if necessary, and use simpler queries to test the graph before applying more complex filters.
 
-
 `Q: How do I restore the original ontology?`
 
 - Solution: To restore the original ontology, re-load the original `phone_ontology.owl` file. You can do this by either running the `define_ontology.py` script again or by manually re-uploading the OWL/XML file into the system if you're using a custom interface.
@@ -423,7 +427,6 @@ Use the web app's `Search` or `Validate Data` options to ensure the new rules ar
 python scripts/define_ontology.py
 ```
 
-
 `Q: Can I extend the ontology with new classes?`
 
 - Solution: Yes, you can extend the ontology by adding new classes and properties to the OWL/XML file. Be sure to follow the existing structure and avoid introducing conflicts. Once changes are made, reload the ontology by running the `define_ontology.py` script to ensure the new classes and properties are applied.
@@ -431,10 +434,10 @@ python scripts/define_ontology.py
 
 ## 9. Best Practices:
 
-- Use Descriptive Labels: Ensure that new items, procedures, and parts have clear and meaningful names. This will make querying and understanding the knowledge graph much easier.
+- `Use Descriptive Labels`: Ensure that new items, procedures, and parts have clear and meaningful names. This will make querying and understanding the knowledge graph much easier.
 
-- Maintain Ontology Consistency: Always follow the schema rules when adding or modifying data. This ensures that the relationships between classes (e.g., Item, Procedure, Part) remain valid and prevent inconsistencies that could lead to incorrect results or errors.
+- `Maintain Ontology Consistency`: Always follow the schema rules when adding or modifying data. This ensures that the relationships between classes (e.g., Item, Procedure, Part) remain valid and prevent inconsistencies that could lead to incorrect results or errors.
 
-- Validate After Each Update: After adding new data or modifying the ontology, use the web application’s Validate Data functionality to check for any errors or inconsistencies. This ensures the ontology remains valid and usable.
+- `Validate After Each Update`: After adding new data or modifying the ontology, use the web application’s Validate Data functionality to check for any errors or inconsistencies. This ensures the ontology remains valid and usable.
 
-- Keep the OWL File Updated: If you make significant updates to the ontology schema (such as adding new classes or properties), ensure these changes are reflected in the phone_ontology.owl file. This keeps the ontology current and avoids issues when running queries.
+- `Keep the OWL File Updated`: If you make significant updates to the ontology schema (such as adding new classes or properties), ensure these changes are reflected in the `phone_ontology.owl` file. This keeps the ontology current and avoids issues when running queries.
