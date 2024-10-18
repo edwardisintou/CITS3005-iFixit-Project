@@ -61,7 +61,7 @@ Here are some example SPARQL queries to help you interact with the knowledge gra
 
 #### 1. Retrieve all parts of an item (e.g., a phone):
 
-```
+```sparql
 SELECT DISTINCT ?part 
 WHERE {
   ?item a <http://example.org/phone_knowledge_graph.owl#Item> .
@@ -72,7 +72,7 @@ Interpretation: This query lists all the parts associated with items, such as th
 
 #### 2. List procedures related to a specific part (e.g., battery):
 
-```
+```sparql
 SELECT DISTINCT ?procedure 
 WHERE {
   ?part a <http://example.org/phone_knowledge_graph.owl#Part> .
@@ -86,7 +86,7 @@ Interpretation: This query finds procedures like “Battery Replacement” for t
 
 #### 3. Find tools used in a specific procedure (e.g., Screen Replacement):
 
-```
+```sparql
 SELECT ?tool 
 WHERE {
   ?procedure a <http://example.org/phone_knowledge_graph.owl#Procedure> .
@@ -100,7 +100,7 @@ Interpretation: The result shows tools needed, such as a screwdriver.
 
 #### 4. Retrieve all steps and corresponding images for a procedure:
 
-```
+```sparql
 SELECT ?stepText ?image
 WHERE {
   ?procedure a <http://example.org/phone_knowledge_graph.owl#Procedure> .
@@ -145,7 +145,7 @@ To add new data to the knowledge graph, follow these steps:
 
 Once you’ve added data to the Phone.json file, rerun the population script to update the knowledge graph:
 
-```
+```bash
 python scripts/populate_ontology.py
 ```
 
@@ -183,7 +183,7 @@ Modifying data in the knowledge graph follows a similar process to adding new da
 
 After making changes to the JSON file, rerun the population script:
 
-```
+```bash
 python scripts/populate_ontology.py
 ```
 
@@ -222,7 +222,7 @@ To delete data from the knowledge graph, follow these steps:
 
 After removing the entry from the JSON file, rerun the population script to update the graph and reflect the deletion:
 
-```
+```bash
 python scripts/populate_ontology.py
 ```
 
@@ -257,24 +257,44 @@ g.serialize(destination="ontology/phone_knowledge_graph.owl", format="xml")
 
 
 
-## 4. Adding or Modifying Ontology Rules*********
-Adding New Rules
+## 4. Adding or Modifying Ontology Rules
 
-If you want to extend the ontology, you can add new rules using OWL.
-Example: Add a new rule that every part must have at least one procedure:
+### Adding New Rules
 
-```
+To extend the ontology, you can add new rules using OWL. For example:
+
+**Enforce that every part must have at least one procedure:**
+
+```xml
 <owl:Restriction>
   <owl:onProperty rdf:resource="#has_procedure"/>
-  <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+  <owl:minCardinality>1</owl:minCardinality>
 </owl:Restriction>
 ```
 
-Updating Ontology Rules
+This rule ensures that each `Part` in the ontology has at least one associated procedure.
 
-    To update existing rules, modify the RDF/OWL XML file and re-upload it into the system. Ensure consistency with the existing schema to avoid conflicts.
+### Updating Ontology Rules
 
-    
+#### 1. Modify the RDF/OWL XML File:
+
+- To update existing rules, directly modify the phone_ontology.owl file in the ontology/ directory.
+
+- Ensure that your updates remain consistent with the existing schema to avoid conflicts or inconsistencies.
+
+#### 2. Re-upload the Updated OWL File:
+
+- After making changes to the ontology, re-upload the updated OWL file into the system.
+
+- You can reload the ontology by running the define_ontology.py script:
+
+```bash
+python scripts/define_ontology.py
+```
+
+#### 3. Verify the changes
+Use the web app's Search or Validate Data options to ensure the new rules are applied and working correctly.
+
 
 
 ## 5. Creating the Knowledge Graph
