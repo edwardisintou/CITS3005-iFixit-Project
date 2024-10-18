@@ -127,7 +127,7 @@ Before creating the knowledge graph and running the web application, you need to
 
 Run the following command from the root of the project directory `CITS3005-iFixit-Project` to create a virtual environment called `venv`:
 
-```bash
+```code
 python -m venv venv
 ```
 
@@ -176,7 +176,7 @@ Once the environment is set up and the dependencies are installed, you can proce
 
 ### 1. Defining the Ontology (`define_ontology.py`)
 
-- This script defines the structure of the ontology, specifying classes like `Item`,`Part`, `Procedure`, `Tool`, `Step`, and `Image`.
+- This script defines the structure of the ontology, specifying classes like `Item`, `Part`, `Procedure`, `Tool`, `Step`, and `Image`.
 
 - It also defines object properties (e.g., `has_part`, `has_procedure`, `uses_tool`) and datatype properties (e.g., `step_text`, `mentioned_tools`).
 
