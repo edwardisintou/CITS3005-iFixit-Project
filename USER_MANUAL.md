@@ -114,7 +114,119 @@ WHERE {
 Interpretation: Lists steps for a procedure with associated images for better visualization.
 
 
-## 3. Managing Data in the Knowledge Graph
+## 3. Setting Up the Environment
+
+Before creating the knowledge graph and running the web application, you need to set up a Python virtual environment and install the required dependencies.
+
+### Setting Up a Virtual Environment
+
+- A virtual environment `(venv)` isolates the project’s dependencies from the system’s Python packages, making it easier to manage and avoid conflicts.
+
+- Steps to create and activate a virtual environment:
+
+#### 1. Create the virtual environment:
+
+Run the following command from the root of the project directory `CITS3005-iFixit-Project` to create a virtual environment called `venv`:
+
+```bash
+python -m venv venv
+```
+
+This will create a folder named venv containing the isolated Python environment.
+
+#### 2. Activate the virtual environment:
+
+- On Windows, run:
+
+```bash
+venv\Scripts\activate
+```
+
+- On macOS/Linux, run:
+
+```bash
+source venv/bin/activate
+```
+
+Once activated, your terminal prompt should change to reflect the virtual environment, e.g., `(venv)`.
+
+#### 3. Deactivate the virtual environment (when done):
+
+To deactivate the virtual environment, simply run:
+
+```bash
+deactivate
+```
+
+### Installing the Required Dependencies
+
+Once the virtual environment is activated, you can install the project dependencies.
+
+**Install dependencies:** Run the following command to install all required Python libraries from the `requirements.txt` file:
+
+```bash
+pip install -r requirements.txt
+```
+
+This will install libraries such as `Flask` (for the web application), `Owlready2` (for managing the ontology), and `RDFlib` (for SPARQL queries).
+
+
+## 4. Creating the Knowledge Graph
+
+Once the environment is set up and the dependencies are installed, you can proceed to create the knowledge graph using the following scripts:
+
+### 1. Defining the Ontology (`define_ontology.py`)
+
+- This script defines the structure of the ontology, specifying classes like `Item`,`Part`, `Procedure`, `Tool`, `Step`, and `Image`.
+
+- It also defines object properties (e.g., `has_part`, `has_procedure`, `uses_tool`) and datatype properties (e.g., `step_text`, `mentioned_tools`).
+
+- The ontology is saved to the file `ontology/phone_ontology.owl`.
+
+Run the following command to define the ontology:
+```bash
+python scripts/define_ontology.py
+```
+
+### 2. Populating the Knowledge Graph (`populate_ontology.py`)
+
+- This script populates the ontology with actual data from the `data/Phone.json file`.
+
+- It creates individuals (instances) for each `Item`, `Part`, `Procedure`, `Tool`, `Step`, and `Image` and links them based on the ontology structure.
+
+- The output is saved in `ontology/phone_knowledge_graph.owl`.
+
+To populate the graph with data, run:
+
+```bash
+python scripts/populate_ontology.py
+```
+
+
+## 5. Using the Web Application
+
+Once the knowledge graph is set up, you can interact with it through the web application.
+
+### 1. Running the Flask Application
+
+With the virtual environment activated and the knowledge graph created, run the Flask app by executing the following command in your terminal:
+
+```bash
+python run.py
+```
+
+This will start a local server where you can interact with the knowledge graph through a web interface.
+
+### 2. Navigating the Application
+
+- `Browse`: Also the `home` route, view the items, procedures, and parts displayed on the browse page, allowing you to navigate the relationships between them by visiting the specific procedure.
+
+- `Validate Data`: Identify inconsistencies or missing links in the data, such as tools used in a procedure but not mentioned in any steps.
+
+- `Search`: Enter SPARQL queries or select predefined queries to explore the knowledge graph. If both a custom query and a predefined query are provided, the predefined query will take precedence.
+
+
+## 6. Managing Data in the Knowledge Graph
 
 ### Adding New Data
 
@@ -191,7 +303,6 @@ python scripts/populate_ontology.py
 
 Use the Validate Data option to check that the modifications have been applied correctly and there are no inconsistencies in the updated data.
 
-
 ### Deleting Data
 
 To delete data from the knowledge graph, follow these steps:
@@ -256,8 +367,7 @@ g.serialize(destination="ontology/phone_knowledge_graph.owl", format="xml")
 - After running this script, rerun the web application or scripts to reflect the changes.
 
 
-
-## 4. Adding or Modifying Ontology Rules
+## 7. Adding or Modifying Ontology Rules
 
 ### Adding New Rules
 
@@ -278,7 +388,7 @@ This rule ensures that each `Part` in the ontology has at least one associated p
 
 #### 1. Modify the RDF/OWL XML File:
 
-- To update existing rules, directly modify the phone_ontology.owl file in the ontology/ directory.
+- To update existing rules, directly modify the `phone_ontology.owl` file in the ontology/ directory.
 
 - Ensure that your updates remain consistent with the existing schema to avoid conflicts or inconsistencies.
 
@@ -296,40 +406,6 @@ python scripts/define_ontology.py
 Use the web app's Search or Validate Data options to ensure the new rules are applied and working correctly.
 
 
-
-## 5. Creating the Knowledge Graph
-
-    Running the Scripts:
-    Open your terminal and run the following commands to define the ontology and populate the knowledge graph:
-
-    `python scripts/define_ontology.p`
-    `python scripts/populate_ontology.py`
-
-    This creates the ontology and knowledge graph files.
-
-
-## 6. Using the web-application:
-
-    Setting Up the Environment:
-    From the `CITS3005-iFixit-Project` directory, install dependancies from terminal:
-    `pip install -r requirements.txt`
-
-    Then run the flask app
-    `python run.py` 
-
-
-## 7. Using Flask App:
-
-    Use the navigation bar to navigate through the web page using the `Browse`, `Validate Data` and `Search` toggles:
-
-    `Search`: Enter SPARQL queries or use predefined queries to explore the data. Note that The predefined queries will overwrite the SPARQL Query if both are inputted.
-
-    `Browse`: View the items, procedures, and parts displayed on the browse page.
-    
-    `Validate Data`: Identify inconsistencies in tool usage and step descriptions.
-
-
-
 ## 8. Troubleshooting and FAQ
 
     Q: Why is my query not returning results?
@@ -344,6 +420,7 @@ Use the web app's Search or Validate Data options to ensure the new rules are ap
     Q: Can I extend the ontology with new classes?
 
         Yes, you can add new classes and properties to the OWL/XML file. Ensure they follow the existing structure to avoid conflicts.
+
 
 ## 9. Best Practices:
 
