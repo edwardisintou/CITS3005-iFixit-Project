@@ -202,7 +202,80 @@ python scripts/populate_ontology.py
 ```
 
 
-## 5. Using the Web Application
+## 5. Testing the Knowledge Graph with SPARQL Queries
+
+We have provided a Python script `run_sparql_queries.py` that contains predefined SPARQL queries to test the knowledge graph. The script includes the following queries:
+
+- Query 1: Find all procedures with more than 6 steps.
+
+- Query 2: Find all items that have more than 10 procedures written for them.
+
+- Query 3: Find all procedures that include a tool that is never mentioned in the procedure steps.
+
+- Query 4: Flag potential hazards in the procedure by identifying steps with words like "careful" and "dangerous."
+
+### How to Use the `run_sparql_queries.py` File
+
+#### Step 1: Open the Script
+
+- Open the `run_sparql_queries.p`y file using any Python IDE or text editor.
+
+#### Step 2: Uncomment a Query to Test
+
+- To run a specific query, simply uncomment the corresponding print statement in the script.
+
+For example, if you want to test Query 1, uncomment the following block:
+
+```python
+# query1_results = g.query(query1)
+# for result in query1_results:
+#     procedure = str(result[0]).split('#')[-1]
+#     step_count = result[1]  # This will be the count of steps
+#     print(f"Procedure {format_result(procedure)} has {step_count} steps")
+```
+
+#### Step 3: Run the Script
+
+- After making changes, save the file and run it from the terminal:
+
+```bash
+python scripts/run_sparql_queries.py
+```
+
+- The output will display the results of the query directly in the terminal.
+
+##### Example Output
+
+If you run Query 1 (find all procedures with more than 6 steps), you might see output like this in the last 2 lines:
+
+```bash
+Procedure Samsung Galaxy Note5 Display Assembly  Replacement has 12 steps
+Procedure iPhone 8 Plus Taptic Engine Replacement has 29 steps
+```
+
+#### Step 4: Modify or Add Queries
+
+- You can also modify the predefined queries or add your own SPARQL queries in the script for custom tests.
+
+For example, to query for parts of a specific item (`iPhone 1st Generation`), add a new query block:
+
+```python
+query_parts = """
+SELECT DISTINCT ?procedure
+WHERE {
+  ?item a <http://example.org/phone_knowledge_graph.owl#Item> ;
+         <http://example.org/phone_knowledge_graph.owl#has_part_procedure> ?procedure .
+  FILTER(CONTAINS(STR(?item), "iPhone_1st_Generation"))
+}
+"""
+query_parts_results = g.query(query_parts)
+for result in query_parts_results:
+    procedure = format_result(str(result[0]).split('#')[-1])
+    print(f"Procedure: {procedure}")
+```
+
+
+## 6. Using the Web Application
 
 Once the knowledge graph is set up, you can interact with it through the web application.
 
@@ -225,7 +298,7 @@ This will start a local server where you can interact with the knowledge graph t
 - `Search`: Enter SPARQL queries or select predefined queries to explore the knowledge graph. If both a custom query and a predefined query are provided, the predefined query will take precedence.
 
 
-## 6. Managing Data in the Knowledge Graph
+## 7. Managing Data in the Knowledge Graph
 
 ### Adding New Data
 
@@ -372,7 +445,7 @@ g.serialize(destination="ontology/phone_knowledge_graph.owl", format="xml")
 - After running this script, rerun the web application or scripts to reflect the changes.
 
 
-## 7. Adding or Modifying Ontology Rules
+## 8. Adding or Modifying Ontology Rules
 
 ### Adding New Rules
 
@@ -411,7 +484,7 @@ python scripts/define_ontology.py
 Use the web app's `Search` or `Validate Data` options to ensure the new rules are applied and working correctly.
 
 
-## 8. Troubleshooting and FAQ
+## 9. Troubleshooting and FAQ
 
 `Q: Why is my query not returning results?`
 
@@ -432,7 +505,7 @@ python scripts/define_ontology.py
 - Solution: Yes, you can extend the ontology by adding new classes and properties to the OWL/XML file. Be sure to follow the existing structure and avoid introducing conflicts. Once changes are made, reload the ontology by running the `define_ontology.py` script to ensure the new classes and properties are applied.
 
 
-## 9. Best Practices:
+## 10. Best Practices:
 
 - `Use Descriptive Labels`: Ensure that new items, procedures, and parts have clear and meaningful names. This will make querying and understanding the knowledge graph much easier.
 

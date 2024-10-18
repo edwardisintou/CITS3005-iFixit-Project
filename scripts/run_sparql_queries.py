@@ -54,15 +54,15 @@ WHERE {
 }
 """
 
-query_results3 = g.query(query3)
-for result in query_results3:
-    procedure = str(result[0]).split('#')[-1]
-    tool = str(result[1]).split('#')[-1]
+# query_results3 = g.query(query3)
+# for result in query_results3:
+#     procedure = str(result[0]).split('#')[-1]
+#     tool = str(result[1]).split('#')[-1]
     
-    formatted_procedure = format_result(procedure)
-    formatted_tool = format_result(tool)
+#     formatted_procedure = format_result(procedure)
+#     formatted_tool = format_result(tool)
     
-    print(f"Procedure {formatted_procedure} has Tool {formatted_tool} that is never mentioned")
+#     print(f"Procedure {formatted_procedure} has Tool {formatted_tool} that is never mentioned")
 
 
 # Query 4: Flag potential hazards in the procedure by identifying steps with works like "careful" and "dangerous"
