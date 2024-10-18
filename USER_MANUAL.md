@@ -396,33 +396,45 @@ This rule ensures that each `Part` in the ontology has at least one associated p
 
 - After making changes to the ontology, re-upload the updated OWL file into the system.
 
-- You can reload the ontology by running the define_ontology.py script:
+- You can reload the ontology by running the `define_ontology.py` script:
 
 ```bash
 python scripts/define_ontology.py
 ```
 
 #### 3. Verify the changes
-Use the web app's Search or Validate Data options to ensure the new rules are applied and working correctly.
+Use the web app's `Search` or `Validate Data` options to ensure the new rules are applied and working correctly.
 
 
 ## 8. Troubleshooting and FAQ
 
-    Q: Why is my query not returning results?
+`Q: Why is my query not returning results?`
 
-        Verify that the entities and relationships you are querying exist in the graph.
-        Adjust the query filters if necessary.
+- Possible Cause: The entities or relationships you are querying may not exist in the graph.
 
-    Q: How do I restore the original ontology?
+- Solution: Verify that the data has been correctly populated and that the ontology includes the expected relationships. Adjust the query filters if necessary, and use simpler queries to test the graph before applying more complex filters.
 
-        Reload the original OWL/XML file into the knowledge graph system.
 
-    Q: Can I extend the ontology with new classes?
+`Q: How do I restore the original ontology?`
 
-        Yes, you can add new classes and properties to the OWL/XML file. Ensure they follow the existing structure to avoid conflicts.
+- Solution: To restore the original ontology, re-load the original `phone_ontology.owl` file. You can do this by either running the `define_ontology.py` script again or by manually re-uploading the OWL/XML file into the system if you're using a custom interface.
+
+```bash
+python scripts/define_ontology.py
+```
+
+
+`Q: Can I extend the ontology with new classes?`
+
+- Solution: Yes, you can extend the ontology by adding new classes and properties to the OWL/XML file. Be sure to follow the existing structure and avoid introducing conflicts. Once changes are made, reload the ontology by running the `define_ontology.py` script to ensure the new classes and properties are applied.
 
 
 ## 9. Best Practices:
 
-        Use Descriptive Labels: Ensure new items and procedures have meaningful names to simplify querying.
-        Maintain Ontology Consistency: Follow schema rules when adding or modifying data.
+- Use Descriptive Labels: Ensure that new items, procedures, and parts have clear and meaningful names. This will make querying and understanding the knowledge graph much easier.
+
+- Maintain Ontology Consistency: Always follow the schema rules when adding or modifying data. This ensures that the relationships between classes (e.g., Item, Procedure, Part) remain valid and prevent inconsistencies that could lead to incorrect results or errors.
+
+- Validate After Each Update: After adding new data or modifying the ontology, use the web application’s Validate Data functionality to check for any errors or inconsistencies. This ensures the ontology remains valid and usable.
+
+- Keep the OWL File Updated: If you make significant updates to the ontology schema (such as adding new classes or properties), ensure these changes are reflected in the phone_ontology.owl file. This keeps the ontology current and avoids issues when running queries.
