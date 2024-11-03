@@ -22,6 +22,6 @@ To set up and run this project, follow the steps in the [USER_MANUAL.md](USER_MA
 - **Interactive Web Application**: A Flask app for easy navigation and validation of the knowledge graph data.
 
 ### Contributors
-- [Edward Le] (https://github.com/edwardisintou)
-- [Markus Gopcevic] (https://github.com/mighT77)
+- [Edward Le](https://github.com/edwardisintou)
+- [Markus Gopcevic](https://github.com/mighT77)
 
