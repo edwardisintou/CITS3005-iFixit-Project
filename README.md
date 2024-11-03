@@ -1,4 +1,4 @@
-# CITS 3005: Knowledge Representation
+# CITS3005: Knowledge Representation
 
 ## Project: Knowledge Graph Application for iFixit Repair Procedures
 
